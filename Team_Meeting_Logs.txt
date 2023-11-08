@@ -11,6 +11,6 @@ iii.Follow-up items, including agreed-on roles and responsibilities
 Tristan: sql/ er diagram
 Cooper: sql
 Ben: front end/ back end
-Suman: login page
+Suman: login page/ registration page
 Oscar: front end/ back end
 Yusef: front end/ back end
