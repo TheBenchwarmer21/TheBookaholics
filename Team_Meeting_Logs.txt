@@ -12,5 +12,5 @@ Tristan: sql/ er diagram
 Cooper: sql
 Ben: front end/ back end
 Suman: login page/ registration page
-Oscar: front end/ back end
+Oscar: (front end/ back end) Complete Issues 17-24
 Yusef: front end/ back end
