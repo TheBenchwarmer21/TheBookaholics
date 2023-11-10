@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE IF NOT EXISTS users (
   user_id SERIAL PRIMARY KEY NOT NULL,
-  username SERIAL VARCHAR(100) NOT NULL,
+  username VARCHAR(100) NOT NULL,
   password char(60) NOT NULL
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS books_to_reviews (
 DROP TABLE IF EXISTS reviews_to_users CASCADE;
 CREATE TABLE IF NOT EXISTS reviews_to_users (
     user_id SERIAL NOT NUll,
-    review_id SERITAL NOT NULL,
+    review_id SERIAL NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (review_id) REFERENCES reviews (review_id)
 );

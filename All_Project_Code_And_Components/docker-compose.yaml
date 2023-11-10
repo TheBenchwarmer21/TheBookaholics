@@ -7,7 +7,7 @@ services:
       - '5432'
     volumes:
       - TheBookaholics:/var/lib/postgresql/data
-      - ./src/init_data:/docker-entrypoint-initdb.d
+      - ./init_data:/docker-entrypoint-initdb.d
   web:
     image: node:lts
     user: 'node'
@@ -23,4 +23,4 @@ services:
       - ./src:/home/node/app
     command: 'npm start'
 volumes:
-  group-project:
+  TheBookaholics:
