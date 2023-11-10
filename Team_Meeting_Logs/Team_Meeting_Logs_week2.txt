@@ -1,0 +1,33 @@
+Whos doing what as of 11/9/2023
+
+Oscar:
+ - Search bar results (API)
+ - Home screen 
+
+Tristan:
+ - Database setup
+ 
+
+Yusef:
+ - Register
+ - My books page
+
+Suman: 
+ - Login
+ - Add review pop-up
+ - Other review pop-up
+
+Ben:
+ - Lab 11
+ - Welcome screen
+ - Nav-bar
+
+Cooper: 
+ - My reviews 
+ - Automated release notes
+
+Cooper and Suman created relevent team meeting logs file/branch
+Cooper and Suman configured release notes.
+Tristan and Oscar worked on Database and docker.
+Ben began nav-bar and lab-11.
+Yusef created directory structure.
