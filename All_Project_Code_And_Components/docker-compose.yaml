@@ -20,7 +20,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./src:/home/node/app
+      - ./:/home/node/app
     command: 'npm start'
 volumes:
   TheBookaholics:
