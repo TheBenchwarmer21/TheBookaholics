@@ -1,0 +1,15 @@
+changelog:
+  exclude:
+    labels:
+      - exclude-from-release
+  categories:
+    - title: Major Changes
+      labels: 
+        - major
+    - title: Minor Changes
+      labels:
+        - minor
+    - title: Other Changes
+      labels:
+        - "*"
+      
