@@ -6,7 +6,7 @@ services:
     expose:
       - '5432'
     volumes:
-      - group-project:/var/lib/postgresql/data
+      - TheBookaholics:/var/lib/postgresql/data
       - ./src/init_data:/docker-entrypoint-initdb.d
   web:
     image: node:lts
