@@ -1,0 +1,19 @@
+November 7
+
+i.Decisions made
+Made decisions about who will work on what.
+
+ii.Alternative actions/options discussed
+
+
+
+iii.Follow-up items, including agreed-on roles and responsibilities
+Tristan: sql/ er diagram
+Cooper: sql
+Ben: front end/ back end
+Suman: login page/ registration page
+Oscar: (front end/ back end) Complete Issues 17-24
+Yusef: front end/ back end
+
+
+
