@@ -24,11 +24,18 @@ CREATE TABLE IF NOT EXISTS reviews (
   FOREIGN KEY (book_id) REFERENCES books (book_id)
 );
 
-DROP TABLE IF EXISTS my_books CASCADE;
-CREATE TABLE IF NOT EXISTS my_books (
+DROP TABLE IF EXISTS books_to_users CASCADE;
+CREATE TABLE IF NOT EXISTS books_to_users (
   book_id SERIAL NOT NUll,
   user_id SERIAL NOT NUll,
   FOREIGN KEY (book_id) REFERENCES books (book_id),
   FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
+DROP TABLE IF EXISTS books_to_reviews CASCADE;
+CREATE TABLE IF NOT EXISTS books_to_reviews (
+  book_id SERIAL NOT NULL,
+  review_id SERIAL NOT NULL,
+  FOREIGN KEY (book_id) REFERENCES books (book_id),
+  FOREIGN KEY (review_id) REFERENCES reviews (review_id)
+)
