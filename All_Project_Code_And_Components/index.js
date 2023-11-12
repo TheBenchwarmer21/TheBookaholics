@@ -114,6 +114,10 @@ app.get('/welcome', (req, res) => {
 app.get('/home', (req, res) => {
   res.render('pages/welcome');
 });
+app.get('/myreviews', (req, res) => {
+  console.log('Rendering myreviews page');
+  res.render('pages/myreviews');
+});
 
 const auth = (req, res, next) => {
   if (req.session.user) {
