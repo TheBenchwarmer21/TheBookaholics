@@ -90,7 +90,13 @@ app.post('/login', async (req, res) => {
     }
   });
 
-  
+  const auth = (req, res, next) => {
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+    next();
+  };
+  app.use(auth);
 
 app.get('/register', (req, res) => {
     res.render('pages/register');
@@ -108,15 +114,15 @@ app.post('/register', async (req, res) => {
       res.render('pages/login', { message: "Registration failed. Please try again." });
   }
 });
-app.get('/welcome', (req, res) => {
+app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
 });
-app.get('/home', (req, res) => {
+app.get('/home', auth, (req, res) => {
   res.render('pages/home');
 });
 
 
-app.get('/myreviews', (req, res) => {
+app.get('/myreviews', auth, (req, res) => {
   console.log('Rendering myreviews page');
 
   const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
@@ -139,13 +145,7 @@ app.get('/myreviews', (req, res) => {
 
 
 
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-  next();
-};
-app.use(auth);
+
   
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
@@ -175,7 +175,7 @@ app.post('/add_reviews', auth, async (req, res) => {
 });
 
 
-app.get("/searchbarresult", (req,res) => { 
+app.get("/searchbarresult", auth, (req,res) => { 
   const userSearch = "intitle:" + req.query.userSearch;
 
   console.log(userSearch);
