@@ -22,15 +22,17 @@
                 greeting = "Good Evening";
             }
         </script>
-        <h2><script>document.write(greeting)</script></h2>
+        <h2><center><script>document.write(greeting)</script></center></h2>
         
         <!-- Search Form -->
-        <div class="search-books mt-4">
-            <h2>Search for a Book</h2>
+        <center>
+            <form action="/searchbarresult" method="GET">
+                <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
+                <input type="submit" value="Search" />
+            </form>
+        </center>
 
-                <a href="/searchbarresult" >Search</a>
-
-        </div>
+        <p> Welocome! </p>
 
     </div>
 </body>
