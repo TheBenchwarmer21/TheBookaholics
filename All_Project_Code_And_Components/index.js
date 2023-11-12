@@ -32,7 +32,7 @@ db.connect()
     obj.done(); // success, release the connection;
   })
   .catch(error => {
-    console.log('ERROR:', error.message || error);
+    console.log('ERROR:', error.message, error);
   });
 
 // *****************************************************
@@ -114,10 +114,30 @@ app.get('/welcome', (req, res) => {
 app.get('/home', (req, res) => {
   res.render('pages/welcome');
 });
+
+
 app.get('/myreviews', (req, res) => {
   console.log('Rendering myreviews page');
-  res.render('pages/myreviews');
+
+  const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
+  db.any(reviewQuery, [req.session.user.username])
+    .then((myreviews) => {
+      res.render('pages/myreviews', {
+        myreviews
+      });
+    })
+    .catch((err) => {
+      console.log('No reviews');
+      console.log(req.session.user.username);
+      console.log(err);
+      res.render('pages/myreviews', {
+        myreviews: [],
+        error: true
+      });
+    });
 });
+
+
 
 const auth = (req, res, next) => {
   if (req.session.user) {

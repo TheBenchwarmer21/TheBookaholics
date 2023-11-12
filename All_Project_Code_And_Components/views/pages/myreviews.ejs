@@ -1,5 +1,29 @@
 
 <%- include ('../partials/header') %>
 
+<main>
+
+    <div class="container">
+        <table class="table">
+         <thead>
+            <tr>
+              <th>Username</th>
+              <th>Review</th>
+              <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+                <%myreviews.forEach(myreview => { %>
+                    <tr>
+                        <td><%= myreview.username%></td>
+                        <td><%= myreview.review%></td>
+                        <td><%= myreview.rating%></td>
+                    </tr>
+               <% });%>
+        </tbody>
+          </table>
+      </div>
+
+</main>
 
 <%- include ('../partials/footer') %>
