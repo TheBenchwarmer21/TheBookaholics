@@ -90,13 +90,7 @@ app.post('/login', async (req, res) => {
     }
   });
 
-  const auth = (req, res, next) => {
-    if (!req.session.user) {
-      return res.redirect('/login');
-    }
-    next();
-  };
-  app.use(auth);
+  
 
 app.get('/register', (req, res) => {
     res.render('pages/register');
@@ -114,6 +108,15 @@ app.post('/register', async (req, res) => {
       res.render('pages/login', { message: "Registration failed. Please try again." });
   }
 });
+
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  next();
+};
+app.use(auth);
+
 app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
 });
@@ -125,22 +128,31 @@ app.get('/home', auth, (req, res) => {
 app.get('/myreviews', auth, (req, res) => {
   console.log('Rendering myreviews page');
 
-  const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
-  db.any(reviewQuery, [req.session.user.username])
-    .then((myreviews) => {
-      res.render('pages/myreviews', {
-        myreviews
-      });
-    })
-    .catch((err) => {
-      console.log('No reviews');
-      console.log(req.session.user.username);
-      console.log(err);
-      res.render('pages/myreviews', {
-        myreviews: [],
-        error: true
-      });
+  if(req.session.user === undefined)
+  {
+    res.render('pages/myreviews', {
+      myreviews: []
     });
+
+  } else {
+
+    const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
+
+    db.any(reviewQuery, [req.session.user.username])
+      .then((myreviews) => {
+        res.render('pages/myreviews', {
+          myreviews
+        });
+      })
+      .catch((err) => {
+        res.render('pages/myreviews', {
+          myreviews: [],
+          error: true
+        });
+      });
+  }
+
+  
 });
 
 
