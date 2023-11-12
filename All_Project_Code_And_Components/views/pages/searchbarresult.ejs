@@ -4,6 +4,7 @@
 
 <main> 
 
+    <!-- Get user input -->
     <center>
     <form action="/searchbarresult" method="GET">
         <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
@@ -16,38 +17,46 @@
         for accurately since this search feature is case sensitive! </center> </p>
     <% } else { %>
 
-      <p> <center> Showing results for: <%- searched %> </center> </p>
+      <p> <center> Showing Results For: <%- searched %> </center> </p>
+      <p> <center> Amount of Books Available: <%- results %> </center></p>
+      <!-- Address below when dealing with "back" and "next" button functionality -->
+      <p> <center> Showing results 1-15: </center> </p>
 
     <div class="container" id="hobbies">
         <div class="row"> 
     <% books.forEach(ABook => {  %>
         <center>
-        <div class="card mb-3" style="width: 1200px; max-height: 650px;">
-            <div class="row no-gutters">
-              <div class="col-md-4">
-                <% if (ABook.volumeInfo.imageLinks) { %> 
-                <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
-                <% } else { %> 
-                  <img src="../Temp/8-2-book-png-9.png" 
-                  class="card-img" alt="No available Picture :(" style="max-height: 500px;">
-                  <% } %>
-              </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                    
-                  <h5 class="card-title"> <%- ABook.volumeInfo.title %> </h5>
-                      <%  if (ABook.volumeInfo.authors) { %>
-                        <p> Author: <%- ABook.volumeInfo.authors[0]  %> </p>
-                    <% } else { %>
-                        <p> Author is Undefinded </p>
-                        <% } %>
-                  <p class="card-text"> Description:  <%- ABook.volumeInfo.description %> </p>
-                  <a href="#" class="btn btn-primary"> Add To Shelf </a>
-                  <a href="#" class="btn btn-primary"> Add Review </a>
+            <div class="card mb-3" style="width: 1200px; max-height: 650px;">
+                <div class="row no-gutters">
+                <div class="col-md-4">
+
+                    <% if (ABook.volumeInfo.imageLinks) { %> 
+                        <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
+                    <% } else { %> 
+                        <!-- Fix rendering problem and proper file path for image -->
+                        <img src="../Temp/8-2-book-png-9.png" 
+                        class="card-img" alt="No available Picture :(" style="max-height: 500px;">
+                    <% } %>
+
                 </div>
-              </div>
+                <div class="col-md-8">
+                    <div class="card-body">  
+                    <h5 class="card-title"> <%- ABook.volumeInfo.title %> </h5>
+
+                        <%  if (ABook.volumeInfo.authors) { %>
+                            <p> Author: <%- ABook.volumeInfo.authors[0]  %> </p>
+                        <% } else { %>
+                            <p> Author is Undefinded </p>
+                            <% } %>
+
+                    <p class="card-text"> Description:  <%- ABook.volumeInfo.description %> </p>
+                    <!-- Link buttons to proper functionality(Ex: Suman adds pop-up here) -->
+                    <a href="#" class="btn btn-primary"> Add To Shelf </a>
+                    <a href="#" class="btn btn-primary"> Add Review </a>
+                    </div>
+                </div>
+                </div>
             </div>
-          </div>
         </center>
     <% }); %> 
     </div>

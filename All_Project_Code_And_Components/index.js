@@ -176,13 +176,11 @@ app.post('/add_reviews', auth, async (req, res) => {
 
 
 app.get("/searchbarresult", auth, (req,res) => { 
+  // "Intitle" returns results where the user's search matches the book's title 
+  // rather than the book's author, description, publisher, etc. 
   const userSearch = "intitle:" + req.query.userSearch;
 
-  console.log(userSearch);
-  
   axios({
-    //https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=
-    // `https://app.ticketmaster.com/discovery/v2/events.json`
     url: `https://www.googleapis.com/books/v1/volumes`,
     method: 'GET',
     dataType: 'json',
@@ -191,16 +189,17 @@ app.get("/searchbarresult", auth, (req,res) => {
     },
     params: {
       q: userSearch,
+      // Address "maxResults" below when dealing with "back" and "next" button functionality
       maxResults: 15,
       apikey: process.env.API_KEY, 
     },
   })
 
     .then(results => {
-      //console.log(results.data.items); 
       res.render('pages/searchbarresult', { 
         results: results.data.totalItems,
         books: results.data.items,
+        // Substringed user input to get rid of "intitle:"
         searched: userSearch.substr(8,userSearch.length),
       }); 
     })
