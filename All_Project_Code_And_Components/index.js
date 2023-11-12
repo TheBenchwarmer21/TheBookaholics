@@ -80,13 +80,13 @@ app.post('/login', async (req, res) => {
       const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', req.body.username);
       if (user && await bcrypt.compare(req.body.password, user.password)) {
         req.session.user = user;
-        res.redirect('/welcome');
+        res.redirect('/home');
       } else {
         throw new Error("Incorrect username or password.");
       }
     } catch (error) {
       console.error("Login Error:", error);
-      res.render('pages/welcome', { message: "Incorrect username or password." });
+      res.render('pages/home', { message: "Incorrect username or password." });
     }
   });
 
@@ -112,7 +112,7 @@ app.get('/welcome', (req, res) => {
   res.render('pages/welcome');
 });
 app.get('/home', (req, res) => {
-  res.render('pages/welcome');
+  res.render('pages/home');
 });
 
 const auth = (req, res, next) => {
@@ -151,6 +151,42 @@ app.post('/add_reviews', auth, async (req, res) => {
 });
 
 
+app.get("/searchbarresult", (req,res) => { 
+  const userSearch = "intitle:" + req.query.userSearch;
+
+  console.log(userSearch);
+  
+  axios({
+    //https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=
+    // `https://app.ticketmaster.com/discovery/v2/events.json`
+    url: `https://www.googleapis.com/books/v1/volumes`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      q: userSearch,
+      maxResults: 15,
+      apikey: process.env.API_KEY, 
+    },
+  })
+
+    .then(results => {
+      //console.log(results.data.items); 
+      res.render('pages/searchbarresult', { 
+        results: results.data.totalItems,
+        books: results.data.items,
+        searched: userSearch.substr(8,userSearch.length),
+      }); 
+    })
+    .catch(err => {
+      res.render("pages/searchbarresult", { 
+        results: [],
+        message: "API call failed",
+      });
+    });
+});
 
 
   app.get('/logout', (req, res) => {
