@@ -115,6 +115,30 @@ app.get('/home', (req, res) => {
   res.render('pages/home');
 });
 
+
+app.get('/myreviews', (req, res) => {
+  console.log('Rendering myreviews page');
+
+  const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
+  db.any(reviewQuery, [req.session.user.username])
+    .then((myreviews) => {
+      res.render('pages/myreviews', {
+        myreviews
+      });
+    })
+    .catch((err) => {
+      console.log('No reviews');
+      console.log(req.session.user.username);
+      console.log(err);
+      res.render('pages/myreviews', {
+        myreviews: [],
+        error: true
+      });
+    });
+});
+
+
+
 const auth = (req, res, next) => {
   if (req.session.user) {
     return res.redirect('/login');
