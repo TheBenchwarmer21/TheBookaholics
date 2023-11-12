@@ -140,7 +140,7 @@ app.get('/myreviews', (req, res) => {
 
 
 const auth = (req, res, next) => {
-  if (req.session.user) {
+  if (!req.session.user) {
     return res.redirect('/login');
   }
   next();
