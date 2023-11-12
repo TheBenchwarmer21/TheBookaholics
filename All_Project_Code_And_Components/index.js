@@ -3,6 +3,7 @@
 // *****************************************************
 
 const express = require('express'); // To build an application server or API
+const path = require('path'); // Add images
 const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
@@ -41,6 +42,7 @@ db.connect()
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
+app.use(express.static(path.join(__dirname, 'resources'))); // Use to add Images
 
 // initialize session variables
 app.use(

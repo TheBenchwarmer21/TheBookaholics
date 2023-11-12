@@ -33,9 +33,7 @@
                     <% if (ABook.volumeInfo.imageLinks) { %> 
                         <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
                     <% } else { %> 
-                        <!-- Fix rendering problem and proper file path for image -->
-                        <img src="../Temp/8-2-book-png-9.png" 
-                        class="card-img" alt="No available Picture :(" style="max-height: 500px;">
+                        <img src="/img/DefaultBook.png" class="card-img"  style="max-height: 500px;">
                     <% } %>
 
                 </div>
