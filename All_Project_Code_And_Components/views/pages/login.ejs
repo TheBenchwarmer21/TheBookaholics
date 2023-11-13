@@ -2,19 +2,34 @@
 
 <main>
   <div class="container">
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+    <div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
+      <h2>Login</h2>
+
+      <!-- Add a banner here -->
+      <div class="alert alert-info" role="alert" style="max-width: 400px; margin: 10px auto; text-align: center;">
+        Welcome back! Please log in to your Bookaholics account.
       </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    <p>Not registered? <a href="/register">Register here</a></p>
+
+      <form action="/login" method="POST">
+        <div style="margin-bottom: 20px;">
+          <label for="username" style="display: block; margin-bottom: 5px;">Username:</label>
+          <input type="text" id="username" name="username" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <label for="password" style="display: block; margin-bottom: 5px;">Password:</label>
+          <input type="password" id="password" name="password" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+        </div>
+
+        <div>
+          <button type="submit" style="padding: 10px 15px; border: none; background-color: #007BFF; color: white; border-radius: 4px; cursor: pointer;">Login</button>
+        </div>
+
+        <div style="margin-top: 10px;">          
+          Don't have an account? <a href="/register">Register here</a>
+        </div>
+      </form>
+    </div>
   </div>
 </main>
 
