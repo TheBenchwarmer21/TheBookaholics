@@ -181,6 +181,37 @@ app.get('/myreviews', auth, (req, res) => {
 
 
 
+app.get('/Mybooks', (req, res) => 
+{
+  console.log('Rendering Mybooks page');
+
+  if (req.session.user === undefined) {
+
+    res.render('pages/Mybooks', { 
+      Mybooks: []
+    });
+
+  } else {
+
+    const bookQuery = 'SELECT * FROM books WHERE username = $1;';
+
+    db.any(bookQuery, [req.session.user.username])
+      .then((Mybooks) => {
+
+        res.render('pages/Mybooks', { 
+          Mybooks: Mybooks
+        });
+      })
+      .catch((err) => {
+        console.error('Error fetching books:', err);
+        res.render('pages/Mybooks', { 
+          Mybooks: [],
+          error: 'Unable to fetch books at this time.'
+        });
+      });
+  }
+});
+
 
   
 // Route to display book reviews

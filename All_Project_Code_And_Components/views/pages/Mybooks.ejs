@@ -1,0 +1,43 @@
+<%- include ('../partials/header') %>
+
+<main>
+
+    <div class="container">
+        <!-- Banner  -->
+        <div class="banner">
+            <h1>My Book Collection</h1>
+        </div>
+
+        <!-- Search bar -->
+        <div class="search-collection">
+            <input type="text" class="search-bar" placeholder="Search Collection...">
+        </div>
+
+        <!-- Book collection  -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% Mybooks.forEach(book => { %>
+                    <tr>
+                        <td><%= book.title %></td>
+                        <td><%= book.author %></td>
+                        <td>
+                            <button class="btn-read">Read</button>
+                            <button class="btn-remove">Remove</button>
+                            <button class="btn-add-review">Add Review</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<%- include ('../partials/footer') %>
