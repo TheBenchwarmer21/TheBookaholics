@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 DROP TABLE IF EXISTS books CASCADE;
 CREATE TABLE IF NOT EXISTS books (
-  book_url VARCHAR(200),
+  book_url VARCHAR(300),
   book_id SERIAL PRIMARY KEY NOT NULL,
   book_name VARCHAR(100) NOT NULL,
   author VARCHAR(100)
@@ -16,8 +16,9 @@ CREATE TABLE IF NOT EXISTS books (
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE IF NOT EXISTS reviews (
   review_id SERIAL PRIMARY KEY NOT NULL,
+  review_title VARCHAR(200),
   username VARCHAR(100),
-  review VARCHAR(200),
+  review VARCHAR(500),
   rating DECIMAL NOT NULL
 );
 
