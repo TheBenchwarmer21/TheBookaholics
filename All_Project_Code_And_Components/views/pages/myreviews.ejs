@@ -1,10 +1,31 @@
 
 <%- include ('../partials/header') %>
 
-<main>
 
+<main>
+    
     <div class="container">
-        <table class="table">
+        <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> Your Reviews</h1>
+        <div class="row row-cols-2 rows-cols-md-2 g-4">
+        
+        <% myreviews.forEach(myreview => { %>
+            <% var shortenedReview = myreview.review.slice(0,250); %>
+            <div class="col">
+                <div class="card" style="height:300px;">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= myreview.review_title %></h5>
+                        <h6 class="card-subtitle text-body-secondary" style="padding-bottom: 20px;">Posted by: <%= myreview.username %></h5>
+                        <p class="card-text"><%= shortenedReview %> </p>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+
+
+        <!-- 
+         <table class="table">
          <thead>
             <tr>
               <th>Username</th>
@@ -23,6 +44,7 @@
         </tbody>
           </table>
       </div>
+      -->
 
 </main>
 
