@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   review_id SERIAL PRIMARY KEY NOT NULL,
   review_title VARCHAR(200),
   username VARCHAR(100),
-  review VARCHAR(500),
+  review VARCHAR(5000),
   rating DECIMAL NOT NULL
 );
 
