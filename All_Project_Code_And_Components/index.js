@@ -63,36 +63,97 @@ app.use(
 // *****************************************************
 // TODO - Include your API routes here
 
-app.get("/", (req,res) => {
+// suman's code for login
+// app.get("/", (req,res) => {
+//   res.render('pages/login');
+// });
+
+
+// // Redirect from root to /login
+// app.get('/', (req, res) => {
+//   res.redirect('/login');
+// });
+
+// app.get('/login', (req, res) => {
+//     res.render('pages/login');
+//   });
+
+// app.post('/login', async (req, res) => {
+//     try {
+//       const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', req.body.username);
+//       if (user && await bcrypt.compare(req.body.password, user.password)) {
+//         req.session.user = user;
+//         res.redirect('/home');
+//       } else {
+//         throw new Error("Incorrect username or password.");
+//       }
+//     } catch (error) {
+//       console.error("Login Error:", error);
+//       res.render('pages/home', { message: "Incorrect username or password." });
+//     }
+//   });
+  
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     return res.redirect('/login');
+//   }
+//   next();
+// };
+// app.use(auth);
+
+
+
+// yusef's login 
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  next();
+};
+
+
+app.use((req, res, next) => {
+  const openPaths = ['/', '/login', '/register'];
+  if (openPaths.includes(req.path)) return next();
+  return auth(req, res, next);
+});
+
+
+app.get("/", (req, res) => {
+  res.redirect('/login'); // Only keep this redirect
+});
+
+
+app.get('/login', (req, res) => {
+  if (req.session.user) return res.redirect('/home'); // If already logged in, go to home
   res.render('pages/login');
 });
 
-
-// Redirect from root to /login
-app.get('/', (req, res) => {
-  res.redirect('/login');
+app.post('/login', async (req, res) => {
+  try {
+    const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', req.body.username);
+    if (user && await bcrypt.compare(req.body.password, user.password)) {
+      req.session.user = user;
+      req.session.save(err => { // Save session before redirecting
+        if (err) {
+          throw err;
+        }
+        res.redirect('/home');
+      });
+    } else {
+      res.render('pages/login', { message: "Incorrect username or password." }); // Render login with a message
+    }
+  } catch (error) {
+    console.error("Login Error:", error);
+    res.render('pages/login', { message: "Login failed, please try again." }); // Render login with a message
+  }
 });
 
-app.get('/login', (req, res) => {
-    res.render('pages/login');
-  });
 
-app.post('/login', async (req, res) => {
-    try {
-      const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', req.body.username);
-      if (user && await bcrypt.compare(req.body.password, user.password)) {
-        req.session.user = user;
-        res.redirect('/home');
-      } else {
-        throw new Error("Incorrect username or password.");
-      }
-    } catch (error) {
-      console.error("Login Error:", error);
-      res.render('pages/home', { message: "Incorrect username or password." });
-    }
-  });
 
-  
+
+
+
 
 
 
@@ -126,13 +187,15 @@ app.post("/register", async (req, res) =>
 
 
 
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-  next();
-};
-app.use(auth);
+
+
+
+
+
+
+
+
+
 
 app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
@@ -140,6 +203,12 @@ app.get('/welcome', auth, (req, res) => {
 app.get('/home', auth, (req, res) => {
   res.render('pages/home');
 });
+
+
+
+
+
+
 
 
 
