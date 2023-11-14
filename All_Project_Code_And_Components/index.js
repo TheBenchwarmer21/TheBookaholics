@@ -200,7 +200,9 @@ app.post("/register", async (req, res) =>
 app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
 });
+
 app.get('/home', auth, (req, res) => {
+  resetGlobalVariables();
   res.render('pages/home');
 });
 
@@ -310,12 +312,58 @@ app.post('/add_reviews', auth, async (req, res) => {
   }
 });
 
+// Please don't touch the global variables or else some functionalities 
+// in the search books won't work 
+let numOfBooksShown = 25 // How many results are shown per "page", can be a potential feature for the user?
+let index = 0; 
+let maxResults = numOfBooksShown; 
+let totalItems = 99999; // An absurdly high number so that the real totalItems can be correctly calculated
+let lowEstimate = 0; 
+let highEstimate = 0; 
+
+  // The "totalItems" from Google Books API is an inaccurate piece of garbage that also
+  // increments value every time the page renders, to combat this, I return the smallest value of totalItems 
+  // for every search as well as estimating the value. 
+function returnEstimatedTotalItems(n) { 
+  if (n < totalItems) { 
+    totalItems = n;
+  }
+
+  lowEstimate = Math.floor(totalItems / 30)  * 30; 
+  highEstimate = Math.ceil(totalItems / 5) * 5; 
+}
+
+function resetGlobalVariables() { 
+  index = 0; 
+  totalItems = 99999; 
+  lowEstimate = 0; 
+  highEstimate = 0; 
+}
 
 app.get("/searchbarresult", auth, (req,res) => { 
   // "Intitle" returns results where the user's search matches the book's title 
   // rather than the book's author, description, publisher, etc. 
   const userSearch = "intitle:" + req.query.userSearch;
 
+  if (req.query.backpage) { 
+    console.log("Back Page activated");
+    index = index - numOfBooksShown; 
+  } 
+  else if (req.query.nextpage) { 
+    console.log("Next Page activated");
+    index = index + numOfBooksShown; 
+  }
+
+  else if (req.query.fillRemaining) { 
+    maxResults = req.query.leftOver - index; 
+  }
+
+  else if (req.query.resetVariables) { 
+    resetGlobalVariables();  
+  }
+
+  console.log("The Current Index: " + index); 
+  
   axios({
     url: `https://www.googleapis.com/books/v1/volumes`,
     method: 'GET',
@@ -326,17 +374,24 @@ app.get("/searchbarresult", auth, (req,res) => {
     params: {
       q: userSearch,
       // Address "maxResults" below when dealing with "back" and "next" button functionality
-      maxResults: 15,
+      startIndex: index,
+      maxResults: maxResults,
       apikey: process.env.API_KEY, 
     },
   })
 
     .then(results => {
+      returnEstimatedTotalItems(results.data.totalItems); 
       res.render('pages/searchbarresult', { 
-        results: results.data.totalItems,
+        results: totalItems,
         books: results.data.items,
         // Substringed user input to get rid of "intitle:"
         searched: userSearch.substr(8,userSearch.length),
+        currentIndex: index,
+        counter: 0,
+        lowEstimate: lowEstimate, 
+        highEstimate: highEstimate,
+        numOfBooksShown: numOfBooksShown,
       }); 
     })
     .catch(err => {
