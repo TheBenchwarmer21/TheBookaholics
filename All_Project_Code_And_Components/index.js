@@ -103,7 +103,7 @@ app.use(
 
 
 
-// yusef's login 
+// yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
     return res.redirect('/login');
