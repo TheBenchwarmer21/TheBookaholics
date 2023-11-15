@@ -102,6 +102,16 @@ app.use(
 
 
 
+
+app.post('/delete_user', (req, res) => {
+  db.any('DELETE FROM users WHERE username = $1', [req.body.username])
+  .then(data => {
+    res.status(200);
+    console.log("User has been deleted");
+    res.json({message: "User has been deleted"});
+  })
+});
+
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
@@ -140,6 +150,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/home');
       });
     } else {
+      res.status(401);
       res.render('pages/login', { message: "Incorrect username or password." }); // Render login with a message
     }
   } catch (error) {
@@ -147,15 +158,6 @@ app.post('/login', async (req, res) => {
     res.render('pages/login', { message: "Login failed, please try again." }); // Render login with a message
   }
 });
-
-
-
-
-
-
-
-
-
 
 // done (for register)
 app.get("/register", (req, res) => { 
@@ -166,26 +168,48 @@ app.get("/register", (req, res) => {
 // done (hash the password, and insert username and hashed password into the users table from create.sql)
 app.post("/register", async (req, res) => 
 { 
-  const hash = await bcrypt.hash(req.body.password, 10);                                     // the hash
-  const newuser = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;`;     // newuser containing username and password
+  const isTest = req.get('Test-Header') === 'unit-test' // The var isTest will be true if the test header = unit-test. There will be no test header if the register route is being called from anything other than mocha/chai tests. 
+  try {
 
-  db.any(newuser, [
-      req.body.username,
-      hash,
-  ])
-  .then((data) => { 
-      // Display successful registration to the user. 
-      res.render("pages/register", { message: "Registration successful" });
-  })
-  .catch((err) => { 
-      // Assuming the error is due to a pre-existing user. In a real-world scenario, you'd want to be more specific about catching this error type.
-      res.render("pages/register", { error: "Another user has the same information.  Please Try Again. " });
-  });
+    const existingUser = await db.one('SELECT FROM users WHERE username = $1', [req.body.username]); // If this fails, i.e. there are no rows that contain the username that is being registered, the code will jump to the catch block, nothing else in the try block will run. 
+    res.status(400);
+    // This will run if a user with the entered username already exists. 
+    if(isTest) { // If this route is being called by a test, return a json
+      res.json({message: 'Username already exists, please try again.'});
+    } 
+    else // If this route is being called by anything other than a test, render page with error message. 
+    { 
+      res.render("pages/register", { error: "Username already exists, please try again." });
+    }
+    
+  } catch (error) {
+
+    const hash = await bcrypt.hash(req.body.password, 10);                                     // the hash
+    const newuser = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;`;     // newuser containing username and password
+  
+    db.any(newuser, [
+        req.body.username,
+        hash,
+    ])
+    .then((data) => { 
+        // Display successful registration to the user. 
+        if(isTest) {
+          res.json({message: "Registration successful"});
+        } else {
+          res.render("pages/register", { message: "Registration successful" });
+        }
+    })
+    .catch((err) => { 
+        // Assuming the error is due to a pre-existing user. In a real-world scenario, you'd want to be more specific about catching this error type.
+        res.status(400);
+        if(isTest) {
+          res.json({message: 'Username already exists, please try again.'});
+        } else {
+          res.render("pages/register", { error: "Username already exists, please try again." });
+        }
+    });
+  }
 });
-
-
-
-
 
 
 // <!-- Endpoint 3 :  Add User ("/add_user") -->
@@ -215,11 +239,6 @@ app.post('/add_user', function (req, res) {
 });
 
 
-
-
-
-
-
 app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
 });
@@ -228,18 +247,6 @@ app.get('/home', auth, (req, res) => {
   resetGlobalVariables();
   res.render('pages/home');
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.get('/myreviews', auth, (req, res) => {
@@ -269,9 +276,6 @@ app.get('/myreviews', auth, (req, res) => {
       });
   }
 });
-
-
-
 
 
 app.get('/Mybooks', (req, res) => 
@@ -440,7 +444,7 @@ app.get("/searchbarresult", auth, (req,res) => {
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
