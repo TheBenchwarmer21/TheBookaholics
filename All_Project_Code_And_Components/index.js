@@ -45,19 +45,18 @@ app.use(bodyParser.json()); // specify the usage of JSON for parsing request bod
 app.use(express.static(path.join(__dirname, 'resources'))); // Use to add Images
 
 // initialize session variables
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'super duper secret!', 
+  saveUninitialized: false,
+  resave: false,
+}));
 
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -436,7 +435,7 @@ app.get("/searchbarresult", auth, (req,res) => {
       res.render('pages/login', { message: "Logged out Successfully" });
     });
   });
-  
+  module.exports = app;
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
