@@ -49,6 +49,32 @@ it('Positive Test Case: Valid User Login', done => {
         done();
       });
   });
+
+  //test case : Register a New User
+  //positive one
+  it('registers a new user successfully', done => {
+    chai.request(server)
+      .post('/register')
+      .send({ username: 'newuser', password: 'password123' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equal('Registration successful');
+        done();
+      });
+  });
+
+  //negative test case: fails to register a user with an existing username
+  it('fails to register a user with an existing username', done => {
+    chai.request(server)
+      .post('/register')
+      .send({ username: 'booklover', password: 'love' })
+      .end((err, res) => {
+        expect(res).to.have.status(400); 
+        expect(res.body.message).to.equal('Another user has the same information.  Please Try Again. ');
+        done();
+      });
+  });
   
+
 
 });
