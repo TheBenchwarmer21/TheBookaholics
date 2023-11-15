@@ -101,7 +101,10 @@ app.use(
 // };
 // app.use(auth);
 
-
+//Lab 11 Testing-----------
+app.get('/welcome', (req,res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
@@ -414,10 +417,7 @@ app.get("/searchbarresult", auth, (req,res) => {
   });
   
 
-//Lab 11 Testing-----------
-app.get('/welcome', (req,res) => {
-  res.json({status: 'success', message: 'Welcome!'});
-});
+
 
 
 
