@@ -376,16 +376,16 @@ app.get("/searchbarresult", auth, (req,res) => {
     console.log("Back Page activated");
     index = index - numOfBooksShown; 
   } 
-  else if (req.query.nextpage) { 
+  if (req.query.nextpage) { 
     console.log("Next Page activated");
     index = index + numOfBooksShown; 
   }
 
-  else if (req.query.fillRemaining) { 
+  if (req.query.fillRemaining) { 
     maxResults = req.query.leftOver - index; 
   }
 
-  else if (req.query.resetVariables) { 
+  if (req.query.resetVariables) { 
     resetGlobalVariables();  
   }
 
