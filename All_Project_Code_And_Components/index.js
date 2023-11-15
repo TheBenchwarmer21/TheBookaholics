@@ -189,7 +189,31 @@ app.post("/register", async (req, res) =>
 
 
 
-
+// <!-- Endpoint 3 :  Add User ("/add_user") -->
+app.post('/add_user', function (req, res) {
+  const query =
+    'insert into userinfo (username, name, email, city) values ($1, $2, $3, $4)  returning * ;';
+  db.any(query, [
+    req.body.username,
+    req.body.name,
+    req.body.email,
+    req.body.city,
+  ])
+    // if query execution succeeds
+    // send success message
+    .then(function (data) {
+      res.status(201).json({
+        status: 'success',
+        data: data,
+        message: 'data added successfully',
+      });
+    })
+    // if query execution fails
+    // send error message
+    .catch(function (err) {
+      return console.log(err);
+    });
+});
 
 
 
@@ -413,21 +437,13 @@ app.get("/searchbarresult", auth, (req,res) => {
     });
   });
   
-
-//Lab 11 Testing-----------
-app.get('/welcome', (req,res) => {
-  res.json({status: 'success', message: 'Welcome!'});
-});
-
-
-
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
 
-
+// yusef first branch commit here (previous work was done on main)
