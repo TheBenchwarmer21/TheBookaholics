@@ -339,6 +339,10 @@ app.post('/add_reviews', auth, async (req, res) => {
   }
 });
 
+
+
+
+
 // Please don't touch the global variables or else some functionalities 
 // in the search books won't work 
 let numOfBooksShown = 25 // How many results are shown per "page", can be a potential feature for the user?
@@ -360,12 +364,16 @@ function returnEstimatedTotalItems(n) {
   highEstimate = Math.ceil(totalItems / 5) * 5; 
 }
 
+
+
 function resetGlobalVariables() { 
   index = 0; 
   totalItems = 99999; 
   lowEstimate = 0; 
   highEstimate = 0; 
 }
+
+
 
 app.get("/searchbarresult", auth, (req,res) => { 
   // "Intitle" returns results where the user's search matches the book's title 
