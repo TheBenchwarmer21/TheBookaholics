@@ -213,12 +213,34 @@ app.post("/register", async (req, res) =>
 });
 
 
-
-
-
-
-
-
+<<<<<<< HEAD
+// <!-- Endpoint 3 :  Add User ("/add_user") -->
+app.post('/add_user', function (req, res) {
+  const query =
+    'insert into userinfo (username, name, email, city) values ($1, $2, $3, $4)  returning * ;';
+  db.any(query, [
+    req.body.username,
+    req.body.name,
+    req.body.email,
+    req.body.city,
+  ])
+    // if query execution succeeds
+    // send success message
+    .then(function (data) {
+      res.status(201).json({
+        status: 'success',
+        data: data,
+        message: 'data added successfully',
+      });
+    })
+    // if query execution fails
+    // send error message
+    .catch(function (err) {
+      return console.log(err);
+    });
+});
+=======
+>>>>>>> 3d0366b8f1821af555c2b9344330a53fd9e1af53
 
 
 app.get('/welcome', auth, (req, res) => {
@@ -305,8 +327,8 @@ app.get('/reviews', auth, async (req, res) => {
   }
 });
 app.get('/add_reviews', auth, (req, res) => {
-  console.log('Rendering add_review page');
-  res.render('pages/add_reviews');
+  const successMessage = req.query.message;
+  res.render('pages/add_reviews', { successMessage });
 });
 
 // Route to add a new book review
@@ -314,7 +336,7 @@ app.post('/add_reviews', auth, async (req, res) => {
   try {
     const { title, author, review } = req.body;
     await db.none('INSERT INTO reviews (title, author, review) VALUES ($1, $2, $3)', [title, author, review]);
-    res.redirect('/pages/add_reviews');
+    res.redirect('/pages/add_reviews?message=Review added successfully');
   } catch (error) {
     console.error("Error adding review:", error);
     res.render('pages/error', { message: "Error adding review." });

@@ -84,7 +84,21 @@ it('Positive Test Case: Valid User Login', done => {
         done();
       });
   });
+
+  describe('Book Review Tests', () => {
+    let token;
   
+    // Perform login before running the tests
+    before(done => {
+      agent
+        .post('/login')
+        .send({ username: 'booklover', password: 'love' })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          // The session is now established and stored in the agent
+          done();
+        });
+    });
 
  // Test case: Post a Book Review
 //Positive scenario: Successfully posts a book review.
@@ -117,8 +131,5 @@ it('Negative Test Case: Fails to post a book review with missing review', done =
     });
 });
 
-
-
-
-
+});
 });
