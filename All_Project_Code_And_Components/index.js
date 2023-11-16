@@ -45,19 +45,18 @@ app.use(bodyParser.json()); // specify the usage of JSON for parsing request bod
 app.use(express.static(path.join(__dirname, 'resources'))); // Use to add Images
 
 // initialize session variables
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'super duper secret!', 
+  saveUninitialized: false,
+  resave: false,
+}));
 
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
+
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
@@ -103,6 +102,16 @@ app.use(
 
 
 
+
+app.post('/delete_user', (req, res) => {
+  db.any('DELETE FROM users WHERE username = $1', [req.body.username])
+  .then(data => {
+    res.status(200);
+    console.log("User has been deleted");
+    res.json({message: "User has been deleted"});
+  })
+});
+
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
@@ -141,6 +150,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/home');
       });
     } else {
+      res.status(401);
       res.render('pages/login', { message: "Incorrect username or password." }); // Render login with a message
     }
   } catch (error) {
@@ -148,15 +158,6 @@ app.post('/login', async (req, res) => {
     res.render('pages/login', { message: "Login failed, please try again." }); // Render login with a message
   }
 });
-
-
-
-
-
-
-
-
-
 
 // done (for register)
 app.get("/register", (req, res) => { 
@@ -167,30 +168,84 @@ app.get("/register", (req, res) => {
 // done (hash the password, and insert username and hashed password into the users table from create.sql)
 app.post("/register", async (req, res) => 
 { 
-  const hash = await bcrypt.hash(req.body.password, 10);                                     // the hash
-  const newuser = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;`;     // newuser containing username and password
+  const isTest = req.get('Test-Header') === 'unit-test' // The var isTest will be true if the test header = unit-test. There will be no test header if the register route is being called from anything other than mocha/chai tests. 
+  try {
 
-  db.any(newuser, [
-      req.body.username,
-      hash,
-  ])
-  .then((data) => { 
-      // Display successful registration to the user. 
-      res.render("pages/register", { message: "Registration successful" });
-  })
-  .catch((err) => { 
-      // Assuming the error is due to a pre-existing user. In a real-world scenario, you'd want to be more specific about catching this error type.
-      res.render("pages/register", { error: "Another user has the same information.  Please Try Again. " });
-  });
+    const existingUser = await db.one('SELECT FROM users WHERE username = $1', [req.body.username]); // If this fails, i.e. there are no rows that contain the username that is being registered, the code will jump to the catch block, nothing else in the try block will run. 
+    res.status(400);
+    // This will run if a user with the entered username already exists. 
+    if(isTest) { // If this route is being called by a test, return a json
+      res.json({message: 'Username already exists, please try again.'});
+    } 
+    else // If this route is being called by anything other than a test, render page with error message. 
+    { 
+      res.render("pages/register", { error: "Username already exists, please try again." });
+    }
+    
+  } catch (error) {
+
+    const hash = await bcrypt.hash(req.body.password, 10);                                     // the hash
+    const newuser = `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;`;     // newuser containing username and password
+  
+    db.any(newuser, [
+        req.body.username,
+        hash,
+    ])
+    .then((data) => { 
+        // Display successful registration to the user. 
+        if(isTest) {
+          res.json({message: "Registration successful"});
+        } else {
+          res.render("pages/register", { message: "Registration successful" });
+        }
+    })
+    .catch((err) => { 
+        // Assuming the error is due to a pre-existing user. In a real-world scenario, you'd want to be more specific about catching this error type.
+        res.status(400);
+        if(isTest) {
+          res.json({message: 'Username already exists, please try again.'});
+        } else {
+          res.render("pages/register", { error: "Username already exists, please try again." });
+        }
+    });
+  }
 });
 
 
+<<<<<<< HEAD
 
 
 
 
 
 
+=======
+// <!-- Endpoint 3 :  Add User ("/add_user") -->
+app.post('/add_user', function (req, res) {
+  const query =
+    'insert into userinfo (username, name, email, city) values ($1, $2, $3, $4)  returning * ;';
+  db.any(query, [
+    req.body.username,
+    req.body.name,
+    req.body.email,
+    req.body.city,
+  ])
+    // if query execution succeeds
+    // send success message
+    .then(function (data) {
+      res.status(201).json({
+        status: 'success',
+        data: data,
+        message: 'data added successfully',
+      });
+    })
+    // if query execution fails
+    // send error message
+    .catch(function (err) {
+      return console.log(err);
+    });
+});
+>>>>>>> 8d3fd34cca476e50aa144ad36843be6448b5d642
 
 
 app.get('/welcome', auth, (req, res) => {
@@ -201,18 +256,6 @@ app.get('/home', auth, (req, res) => {
   resetGlobalVariables();
   res.render('pages/home');
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.get('/myreviews', auth, (req, res) => {
@@ -242,9 +285,6 @@ app.get('/myreviews', auth, (req, res) => {
       });
   }
 });
-
-
-
 
 
 app.get('/Mybooks', (req, res) => 
@@ -308,6 +348,10 @@ app.post('/add_reviews', auth, async (req, res) => {
   }
 });
 
+
+
+
+
 // Please don't touch the global variables or else some functionalities 
 // in the search books won't work 
 let numOfBooksShown = 25 // How many results are shown per "page", can be a potential feature for the user?
@@ -329,12 +373,16 @@ function returnEstimatedTotalItems(n) {
   highEstimate = Math.ceil(totalItems / 5) * 5; 
 }
 
+
+
 function resetGlobalVariables() { 
   index = 0; 
   totalItems = 99999; 
   lowEstimate = 0; 
   highEstimate = 0; 
 }
+
+
 
 app.get("/searchbarresult", auth, (req,res) => { 
   // "Intitle" returns results where the user's search matches the book's title 
@@ -345,16 +393,16 @@ app.get("/searchbarresult", auth, (req,res) => {
     console.log("Back Page activated");
     index = index - numOfBooksShown; 
   } 
-  else if (req.query.nextpage) { 
+  if (req.query.nextpage) { 
     console.log("Next Page activated");
     index = index + numOfBooksShown; 
   }
 
-  else if (req.query.fillRemaining) { 
+  if (req.query.fillRemaining) { 
     maxResults = req.query.leftOver - index; 
   }
 
-  else if (req.query.resetVariables) { 
+  if (req.query.resetVariables) { 
     resetGlobalVariables();  
   }
 
@@ -408,12 +456,12 @@ app.get("/searchbarresult", auth, (req,res) => {
       res.render('pages/login', { message: "Logged out Successfully" });
     });
   });
-  
+  module.exports = app;
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
 
 
