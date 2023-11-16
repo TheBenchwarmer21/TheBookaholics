@@ -86,5 +86,39 @@ it('Positive Test Case: Valid User Login', done => {
   });
   
 
+ // Test case: Post a Book Review
+//Positive scenario: Successfully posts a book review.
+it('Positive Test Case: Posts a book review successfully', done => {
+  chai.request(server)
+    .post('/add_reviews')
+    .send({ 
+      title: 'Example Book Title',
+      author: 'Author',
+      review: '5' 
+    })
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res.body.message).to.equal('Review added successfully');
+      done();
+    });
+});
+it('Negative Test Case: Fails to post a book review with missing review', done => {
+  chai.request(server)
+    .post('/add_reviews')
+    .send({ 
+      title: 'Example Book Title',// 'username' maps to 'title'
+      author: '', // Empty author field
+      review: '' 
+    })
+    .end((err, res) => {
+      expect(res).to.have.status(400); 
+      expect(res.body.message).to.equal('Error adding review:'); 
+      done();
+    });
+});
+
+
+
+
 
 });
