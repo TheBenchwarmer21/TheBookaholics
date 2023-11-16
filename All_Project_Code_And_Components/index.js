@@ -165,6 +165,7 @@ app.get("/register", (req, res) => {
 });
 
 
+
 // done (hash the password, and insert username and hashed password into the users table from create.sql)
 app.post("/register", async (req, res) => 
 { 
@@ -212,6 +213,7 @@ app.post("/register", async (req, res) =>
 });
 
 
+<<<<<<< HEAD
 // <!-- Endpoint 3 :  Add User ("/add_user") -->
 app.post('/add_user', function (req, res) {
   const query =
@@ -237,6 +239,8 @@ app.post('/add_user', function (req, res) {
       return console.log(err);
     });
 });
+=======
+>>>>>>> 3d0366b8f1821af555c2b9344330a53fd9e1af53
 
 
 app.get('/welcome', auth, (req, res) => {
