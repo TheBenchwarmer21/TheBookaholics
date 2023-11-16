@@ -212,14 +212,7 @@ app.post("/register", async (req, res) =>
 });
 
 
-<<<<<<< HEAD
 
-
-
-
-
-
-=======
 // <!-- Endpoint 3 :  Add User ("/add_user") -->
 app.post('/add_user', function (req, res) {
   const query =
@@ -245,7 +238,6 @@ app.post('/add_user', function (req, res) {
       return console.log(err);
     });
 });
->>>>>>> 8d3fd34cca476e50aa144ad36843be6448b5d642
 
 
 app.get('/welcome', auth, (req, res) => {
