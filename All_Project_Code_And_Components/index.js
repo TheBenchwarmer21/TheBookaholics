@@ -215,12 +215,6 @@ app.post("/register", async (req, res) =>
 
 
 
-
-
-
-
-
-
 app.get('/welcome', auth, (req, res) => {
   res.render('pages/welcome');
 });
