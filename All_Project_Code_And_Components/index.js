@@ -213,34 +213,7 @@ app.post("/register", async (req, res) =>
 });
 
 
-<<<<<<< HEAD
-// <!-- Endpoint 3 :  Add User ("/add_user") -->
-app.post('/add_user', function (req, res) {
-  const query =
-    'insert into userinfo (username, name, email, city) values ($1, $2, $3, $4)  returning * ;';
-  db.any(query, [
-    req.body.username,
-    req.body.name,
-    req.body.email,
-    req.body.city,
-  ])
-    // if query execution succeeds
-    // send success message
-    .then(function (data) {
-      res.status(201).json({
-        status: 'success',
-        data: data,
-        message: 'data added successfully',
-      });
-    })
-    // if query execution fails
-    // send error message
-    .catch(function (err) {
-      return console.log(err);
-    });
-});
-=======
->>>>>>> 3d0366b8f1821af555c2b9344330a53fd9e1af53
+
 
 
 app.get('/welcome', auth, (req, res) => {
