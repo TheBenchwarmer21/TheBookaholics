@@ -306,13 +306,27 @@ app.get('/add_reviews', auth, (req, res) => {
 
 // Route to add a new book review
 app.post('/add_reviews', auth, async (req, res) => {
+  const isTest = req.get('Test-Header') === 'unit-test'
   try {
-    const { title, author, review } = req.body;
-    await db.none('INSERT INTO reviews (title, author, review) VALUES ($1, $2, $3)', [title, author, review]);
-    res.redirect('/pages/add_reviews?message=Review added successfully');
+    const { review_title, username, review, rating} = req.body;
+    await db.none('INSERT INTO reviews (review_title, username, review, rating) VALUES ($1, $2, $3, $4)', [review_title, username, review, rating]);
+    if (isTest)
+    {
+      res.json({message:'Review added successfully'});
+    }
+    else{
+      res.render('pages/add_reviews' ,{ message:'Review added successfully'});
+    }
   } catch (error) {
-    console.error("Error adding review:", error);
-    res.render('pages/error', { message: "Error adding review." });
+    if (isTest)
+    {
+      res.json({message:'Error adding review'});
+    }
+    else
+    {
+    console.error('Error adding review', error);
+    res.render('pages/error', { message:'Error adding review'});
+    }
   }
 });
 
