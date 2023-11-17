@@ -86,8 +86,6 @@ it('Positive Test Case: Valid User Login', done => {
       // });
   });
 
-  describe('Book Review Tests', () => {
-    let token;
   
     // Perform login before running the tests
     // before(done => {
@@ -112,7 +110,7 @@ it('Positive Test Case: Posts a book review successfully', done => {
       username: 'Author',
       review: 'slkdf jlksjf ',
       rating: 9.8 
-      
+
     })
     .end((err, res) => {
       expect(res).to.have.status(200);
@@ -137,5 +135,5 @@ it('Negative Test Case: Fails to post a book review with missing review', done =
     });
 });
 
-});
+
 });
