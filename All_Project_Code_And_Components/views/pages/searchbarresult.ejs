@@ -15,29 +15,15 @@
     <!-- <p> below is for spacing purposes -->
     <p> </p>
 
-    <!-- Get user input -->
-    <div>
-        <center>
-            <form action="/searchbarresult" method="GET">
-                <input name="resetVariables" value="0" hidden /> <!-- Reset Gloal Variables -->
-                <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" />
-                <button type="submit" class="btn btn-dark" style="background-color: #BC9E82; color:black" value="Search"> Search </button>
-            </form>
-        </center>
-    </div>
-
-    <!-- <p> below is for spacing purposes -->
-    <p> </p>
-
     <center>
-        <div class="card" style="width: 35rem; background-color: #CFB997;">
+        <div class="card" style="width: 70rem; background-color: #CFB997;">
             <!-- Header Information -->
             <% if (results === 0) { %> 
                 <h3 class="card-title"> <center> No books with that title! Try another book or type the title you're looking 
                 for accurately since this search feature is case sensitive! </center> </h3>
 
             <% } else { %>
-                <h3 class="card-title"> <center> Showing Results For: <%- searched %> </center> </h3>
+                <h3 class="card-title"> <center> Showing Results For: <%- title %> </center> </h3>
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center> </h5>
             <% } %>
             
@@ -48,6 +34,45 @@
             <% } else {  %> 
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </h5>
             <% } %> 
+        </div>
+    </center>
+
+    <!-- <p> below is for spacing purposes -->
+    <p> </p>
+
+    <center>
+        <!-- Get Search Bar -->
+        <div class="card" style="width: 700px; background-color: #BC9E82;">
+            <div>
+                <h3> Search Again Below! </h3>
+                <form action="/searchbarresult" method="GET">
+                    <input name="resetVariables" value="0" hidden /> <!-- Reset Gloal Variables -->
+                    <!-- <p> below is for spacing purposes -->
+                    <p> </p>
+                    
+                    <div class="form-group row">
+                        <!-- Search Button -->
+                        <div class="ml-auto" style="text-align:center">
+                            <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" required />
+                            <button type="submit" style="background-color: #BC9E82; color:black" class="btn btn-dark" value="Search"> Search </button>
+                        </div>
+
+                        <!-- <p> below is for spacing purposes -->
+                        <p> </p>
+                        
+                        <!-- Search by Author or Title -->
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                            <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
+                            </label>
+
+                            <label class="btn btn-secondary">
+                            <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </center>
 
@@ -160,19 +185,19 @@
             <!-- Back Button -->
             <form action="/searchbarresult" method="GET">
                 <%  if (currentIndex == 0) {  %>
-                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searched %>" name="userSearch" disabled > Back </button>
+                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searchOption %><%= searched %>" name="userSearch" disabled > Back </button>
                 <% } else { %> 
                     <input name="backpage" value="0" hidden />
-                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searched %>" name="userSearch" > Back </button>
+                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searchOption %><%= searched %>" name="userSearch" > Back </button>
                 <% } %>
             </form>
             <!-- Next Button -->
             <form action="/searchbarresult" method="GET">
                 <%  if (counter < numOfBooksShown) {  %>
-                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searched %>" name="userSearch" disabled > Next </button>
+                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searchOption %><%= searched %>" name="userSearch" disabled > Next </button>
                 <% } else { %>
                     <input name="nextpage" value="0" hidden />
-                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searched %>" name="userSearch" > Next </button>
+                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searchOption %><%= searched %>" name="userSearch" > Next </button>
                 <% } %>    
             </form>
         </center>
