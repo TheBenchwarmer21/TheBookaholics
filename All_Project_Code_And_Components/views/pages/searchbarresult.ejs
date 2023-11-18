@@ -5,128 +5,163 @@
 <main> 
 
     <!-- Get user input -->
-    <center>
-    <form action="/searchbarresult" method="GET">
-        <input name="resetVariables" value="0" hidden />
-        <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
-        <input type="submit" value="Search" />
-    </form>
-    </center>
-
-    <% if (results === 0) { %> 
-      <p> <center> No books with that title! Try another book or type the title you're looking 
-        for accurately since this search feature is case sensitive! </center> </p>
-    <% } else { %>
-
-      <p> <center> Showing Results For: <%- searched %> </center> </p>
-      <p> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center></p>
-      <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
-        <p> <center> Showing the last bit of results! </center> </p>
-    <% } else {  %> 
-        <p> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </p>
-    <% } %> 
-
-    <div class="container" id="hobbies">
-        <div class="row"> 
-    <% books.forEach(ABook => {  %>
+    <div>
         <center>
+            <form action="/searchbarresult" method="GET">
+                <input name="resetVariables" value="0" hidden /> <!-- Reset Gloal Variables -->
+                <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
+                <input type="submit" value="Search" />
+            </form>
+        </center>
+    </div>
+
+    <div>
+        <!-- Header Information -->
+        <% if (results === 0) { %> 
+            <p> <center> No books with that title! Try another book or type the title you're looking 
+            for accurately since this search feature is case sensitive! </center> </p>
+
+        <% } else { %>
+            <p> <center> Showing Results For: <%- searched %> </center> </p>
+            <p> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center></p>
+        <% } %>
+        
+        <!-- Last Page Implemenation -->
+        <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
+            <p> <center> Showing the last bit of results! </center> </p>
+
+        <% } else {  %> 
+            <p> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </p>
+        <% } %> 
+    </div>
+
+    <!-- Cards Displayed -->
+    <div class="container" style="width: 1200px; max-height: 650px;">
+        <div class="row" > 
+
+        <% books.forEach(ABook => {  %>
             <div class="card mb-3" style="width: 1200px; max-height: 650px;">
                 <div class="row no-gutters">
-                <div class="col-md-4">
-
-                    <% if (ABook.volumeInfo.imageLinks) { %> 
-                        <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
-                    <% } else { %> 
-                        <img src="/img/DefaultBook.png" class="card-img"  style="max-height: 500px;">
-                    <% } %>
-
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">  
-                    <h5 class="card-title"> <%- ABook.volumeInfo.title %> </h5>
-
-                        <%  if (ABook.volumeInfo.authors) { %>
-                            <p> Author: <%- ABook.volumeInfo.authors[0]  %> </p>
-                        <% } else { %>
-                            <p> Author is Undefinded </p>
-                            <% } %>
-
-                        <% if (ABook.volumeInfo.description) { %>
-                            <p class="card-text"> Description:  <%- ABook.volumeInfo.description %> </p>
+                    <div class="col-md-4">
+                        <!-- Add Book Cover if any -->
+                        <% if (ABook.volumeInfo.imageLinks) { %> 
+                            <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
                         <% } else { %> 
-                            <p class="card-text"> No Description %> </p>
+                            <img src="/img/DefaultBook.png" class="card-img"  style="max-height: 500px;">
                         <% } %>
+                    </div>
 
+                    <!-- Card Details -->
+                    <div class = "col-md-8">
+                        <div class="card text-center">
+                            <div class="card-header">
+                                <!-- Title and Author -->
+                                <h4> <%- ABook.volumeInfo.title %> </h4>
+                                <% if (ABook.volumeInfo.authors) { %>
+                                    <p class="card-text"> Author:  <%- ABook.volumeInfo.authors[0] %> </p>
+                                <% } else { %>
+                                    <p class="card-text"> No Author Available </p>
+                                <% } %>
+                            </div>
 
-                    <!-- Link buttons to proper functionality(Ex: Suman adds pop-up here) -->
-                    <a href="#" class="btn btn-primary"> Add To Shelf </a>
+                            <div class="card-body">
+                                <!-- Print out Stars based on rating, if any -->
+                                <% if (ABook.volumeInfo.averageRating) { %> 
+                                    <% if (ABook.volumeInfo.averageRating <= 1.4) { %>
+                                        <h4 class="card-title"> ★☆☆☆☆ </h4>
+                                    <% } else if (ABook.volumeInfo.averageRating <= 2.4) { %> 
+                                        <h4 class="card-title"> ★★☆☆☆ </h4>
+                                    <% } else if (ABook.volumeInfo.averageRating <= 3.4) { %> 
+                                        <h4 class="card-title"> ★★★☆☆ </h4>
+                                    <% } else if (ABook.volumeInfo.averageRating <= 4.4) { %> 
+                                        <h4 class="card-title"> ★★★★☆ </h4>
+                                    <% } else if (ABook.volumeInfo.averageRating <= 5) { %> 
+                                        <h4 class="card-title"> ★★★★★ </h4>
+                                    <% } %>
+                                <% } else { %>
+                                    <h5 class="card-title"> No Star Review Available </h5>
+                                <% } %>
 
-                    <% counter = counter + 1; %>
+                                <!--Print out Book Description -->
+                                <% if (ABook.volumeInfo.description) { %>
+                                    <p class="card-text" style="font-family: 'Times New Roman'" > <%- ABook.volumeInfo.description %> </p>
+                                <% } else { %>
+                                    <p class="card-text"> No Description </p>
+                                <% } %>
+                            </div>
 
-                    <!-- Suman's Pop-up Code: -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
-                    <!-- Modal -->
-                    <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel">Add a New Book Review</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                            <div class="card-footer text-muted">
+                                <!-- Link buttons to proper functionality(Ex: Suman adds pop-up here) -->
+                                <a href="#" class="btn btn-warning" style="float: left" > Add To Shelf </a>
+                                <% counter = counter + 1; %>
+
+                                <!-- Suman's Pop-up Code: -->
+                                <button type="button" class="btn btn-warning" style="float: right" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalLabel">Add a New Book Review</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="/add_reviews">
+                                                    <div class="form-group">
+                                                        <label for="title">Review Title:</label>
+                                                        <input type="text" class="form-control" id="title" name="title" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="review">Review:</label>
+                                                        <textarea class="form-control" id="review" name="review" required></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="rating">Rating:</label>
+                                                        <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-warning">Submit Review</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <form method="POST" action="/add_reviews">
-                                        <div class="form-group">
-                                            <label for="title">Review Title:</label>
-                                            <input type="text" class="form-control" id="title" name="title" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="review">Review:</label>
-                                            <textarea class="form-control" id="review" name="review" required></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="rating">Rating:</label>
-                                            <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                                    </form>
-                                </div>
+                                 <!-- End of Suman's Code -->
+ 
                             </div>
                         </div>
                     </div>
-
-
-                <!-- End of Suman's Code -->
-
-                    </div>
-                </div>
                 </div>
             </div>
+        <% }); %> 
+
+        <!-- Back and Next button functionality -->
+        <center>
+            <!-- Back Button -->
+            <form action="/searchbarresult" method="GET">
+                <%  if (currentIndex == 0) {  %>
+                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searched %>" name="userSearch" disabled > Back </button>
+                <% } else { %> 
+                    <input name="backpage" value="0" hidden />
+                    <button type="submit" class="btn btn-secondary" style="float: left" value="<%= searched %>" name="userSearch" > Back </button>
+                <% } %>
+            </form>
+            <!-- Next Button -->
+            <form action="/searchbarresult" method="GET">
+                <%  if (counter < numOfBooksShown) {  %>
+                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searched %>" name="userSearch" disabled > Next </button>
+                <% } else { %>
+                    <input name="nextpage" value="0" hidden />
+                    <button type="submit" class="btn btn-secondary" style="float: right" value="<%= searched %>" name="userSearch" > Next </button>
+                <% } %>    
+            </form>
         </center>
-    <% }); %> 
+        
+        </div>
 
-    <!-- Back and Next button functionality -->
-    <center>
-        <form action="/searchbarresult" method="GET">
-            <%  if (currentIndex == 0) {  %>
-                <button type="submit" value="<%= searched %>" name="userSearch" disabled > Back </button>
-            <% } else { %> 
-                <input name="backpage" value="0" hidden />
-                <button type="submit" value="<%= searched %>" name="userSearch" > Back </button>
-            <% } %>
-        </form>
-        <form action="/searchbarresult" method="GET">
-            <%  if (counter < numOfBooksShown) {  %>
-                <button type="submit" value="<%= searched %>" name="userSearch" disabled > Next </button>
-            <% } else { %>
-                <input name="nextpage" value="0" hidden />
-                <button type="submit" value="<%= searched %>" name="userSearch" > Next </button>
-            <% } %>    
-        </form>
-    </center>
+        <!-- <p> below is for spacing purposes, for the buttons -->
+        <p> </p>
 
     </div>
-    </div>
-    <% } %>
 </main>
