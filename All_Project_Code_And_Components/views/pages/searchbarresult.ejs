@@ -2,41 +2,60 @@
 <%- include ('../partials/header') %>
 <html>
 
+
+<!-- Adds Background Image -->
+<style>
+    body {
+      background-image: url('/img/WoodBackround.avif');
+    }
+</style>
+
 <main> 
+
+    <!-- <p> below is for spacing purposes -->
+    <p> </p>
 
     <!-- Get user input -->
     <div>
         <center>
             <form action="/searchbarresult" method="GET">
                 <input name="resetVariables" value="0" hidden /> <!-- Reset Gloal Variables -->
-                <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
-                <input type="submit" value="Search" />
+                <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" />
+                <button type="submit" class="btn btn-dark" style="background-color: #BC9E82; color:black" value="Search"> Search </button>
             </form>
         </center>
     </div>
 
-    <div>
-        <!-- Header Information -->
-        <% if (results === 0) { %> 
-            <p> <center> No books with that title! Try another book or type the title you're looking 
-            for accurately since this search feature is case sensitive! </center> </p>
+    <!-- <p> below is for spacing purposes -->
+    <p> </p>
 
-        <% } else { %>
-            <p> <center> Showing Results For: <%- searched %> </center> </p>
-            <p> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center></p>
-        <% } %>
-        
-        <!-- Last Page Implemenation -->
-        <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
-            <p> <center> Showing the last bit of results! </center> </p>
+    <center>
+        <div class="card" style="width: 35rem; background-color: #CFB997;">
+            <!-- Header Information -->
+            <% if (results === 0) { %> 
+                <h3 class="card-title"> <center> No books with that title! Try another book or type the title you're looking 
+                for accurately since this search feature is case sensitive! </center> </h3>
 
-        <% } else {  %> 
-            <p> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </p>
-        <% } %> 
-    </div>
+            <% } else { %>
+                <h3 class="card-title"> <center> Showing Results For: <%- searched %> </center> </h3>
+                <h5 class="card-subtitle mb-2 text-muted"> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center> </h5>
+            <% } %>
+            
+            <!-- Last Page Implemenation -->
+            <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
+                <h5 class="card-subtitle mb-2 text-muted"> <center> Showing the last bit of results! </center> </h5>
+
+            <% } else {  %> 
+                <h5 class="card-subtitle mb-2 text-muted"> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </h5>
+            <% } %> 
+        </div>
+    </center>
+
+    <!-- <p> below is for spacing purposes -->
+    <p> </p>
 
     <!-- Cards Displayed -->
-    <div class="container" style="width: 1200px; max-height: 650px;">
+    <div class="container">
         <div class="row" > 
 
         <% books.forEach(ABook => {  %>
@@ -52,9 +71,9 @@
                     </div>
 
                     <!-- Card Details -->
-                    <div class = "col-md-8">
-                        <div class="card text-center">
-                            <div class="card-header">
+                    <div class = "col-md-8" style="background-color:#CFB997;">
+                        <div class="card text-center" >
+                            <div class="card-header" style="background-color: #BC9E82;">
                                 <!-- Title and Author -->
                                 <h4> <%- ABook.volumeInfo.title %> </h4>
                                 <% if (ABook.volumeInfo.authors) { %>
@@ -64,7 +83,7 @@
                                 <% } %>
                             </div>
 
-                            <div class="card-body">
+                            <div class="card-body" style="background-color:#CFB997;">
                                 <!-- Print out Stars based on rating, if any -->
                                 <% if (ABook.volumeInfo.averageRating) { %> 
                                     <% if (ABook.volumeInfo.averageRating <= 1.4) { %>
@@ -90,13 +109,13 @@
                                 <% } %>
                             </div>
 
-                            <div class="card-footer text-muted">
+                            <div class="card-footer text-muted" style="background-color:#CFB997;">
                                 <!-- Link buttons to proper functionality(Ex: Suman adds pop-up here) -->
-                                <a href="#" class="btn btn-warning" style="float: left" > Add To Shelf </a>
+                                <a href="#" class="btn btn-secondary" style="float: left" > Add To Shelf </a>
                                 <% counter = counter + 1; %>
 
                                 <!-- Suman's Pop-up Code: -->
-                                <button type="button" class="btn btn-warning" style="float: right" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
+                                <button type="button" class="btn btn-secondary" style="float: right" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
                                 <!-- Modal -->
                                 <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
