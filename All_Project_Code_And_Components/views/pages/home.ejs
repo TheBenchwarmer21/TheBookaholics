@@ -39,13 +39,34 @@
             <h1><center><script>document.write(greeting)</script></center></h1>
             <!-- End of Suman Code -->
             
+
             <!-- Search Form -->
-            <center>
-                <form action="/searchbarresult" method="GET">
-                    <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" />
-                    <button type="submit" class="btn btn-dark" style="background-color: #BC9E82; color:black" value="Search"> Search </button>
-                </form>
-            </center>
+            <div>
+                    <form action="/searchbarresult" method="GET">
+                        <!-- Title Search -->
+                        <div class="form-group row">
+                            <!-- Search Button -->
+                            <div class="ml-auto" style="text-align:center">
+                                <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch"  />
+                                <button type="submit" style="background-color: #BC9E82; color:black" class="btn btn-dark" value="Search"> Search </button>
+                            </div>
+
+                            <!-- <p> below is for spacing purposes -->
+                            <p> </p>
+                            
+                            <!-- Search by Author or Title -->
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-secondary active">
+                                  <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
+                                </label>
+                                <label class="btn btn-secondary">
+                                  <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
+                                </label>
+                              </div>
+                        </div>
+                    </form>
+
+            </div>
 
             <!-- Welcome the user -->
             <center> <p style="font-family: 'Times New Roman'; font-size: 20px;"> Welcome! Use the search bar to find a book title to read or add a review about! Note that 

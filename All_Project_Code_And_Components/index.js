@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const { use } = require('chai');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -329,6 +330,11 @@ let totalItems = 99999; // An absurdly high number so that the real totalItems c
 let lowEstimate = 0; 
 let highEstimate = 0; 
 
+let value = 0; // When 0, store value else never change value
+let userSearch = ""; 
+let searchOption = ""; 
+let title = ""; 
+
   // The "totalItems" from Google Books API is an inaccurate piece of garbage that also
   // increments value every time the page renders, to combat this, I return the smallest value of totalItems 
   // for every search as well as estimating the value. 
@@ -341,40 +347,83 @@ function returnEstimatedTotalItems(n) {
   highEstimate = Math.ceil(totalItems / 5) * 5; 
 }
 
+// This function is made to store userSearch the first time, but never the second time. 
+function returnFixedString(newInput) { 
+  if (value == 0) { 
+    userSearch = newInput; 
+  }
 
+  else { 
+    if (userSearch.length == newInput) { 
+      userSearch = newInput; 
+    }
+  }
+
+}
+
+// This function is made to store title the first time, but never the second time. 
+function returnFixedTitle(newInput) { 
+  if (value == 0) { 
+    title = newInput; 
+  }
+
+  else { 
+    if (title.length == newInput) { 
+      title = newInput; 
+    }
+  }
+
+}
 
 function resetGlobalVariables() { 
   index = 0; 
   totalItems = 99999; 
   lowEstimate = 0; 
   highEstimate = 0; 
+
+  value = 0; 
+  userSearch = ""; 
+  searchOption = ""; 
+  title = ""; 
 }
 
 
 
 app.get("/searchbarresult", auth, (req,res) => { 
-  // "Intitle" returns results where the user's search matches the book's title 
-  // rather than the book's author, description, publisher, etc. 
-  const userSearch = "intitle:" + req.query.userSearch;
-
-  if (req.query.backpage) { 
-    console.log("Back Page activated");
-    index = index - numOfBooksShown; 
-  } 
-  if (req.query.nextpage) { 
-    console.log("Next Page activated");
-    index = index + numOfBooksShown; 
-  }
-
-  if (req.query.fillRemaining) { 
-    maxResults = req.query.leftOver - index; 
-  }
-
+  // Immediately check if variables need to be reset
   if (req.query.resetVariables) { 
     resetGlobalVariables();  
   }
 
-  console.log("The Current Index: " + index); 
+  let holdUserInput; // "New" input that I don't want to actually pass to Google Books API
+
+  // Below is to keep the first input but never the second one
+  if (req.query.searchOption) { 
+    searchOption = req.query.searchOption;
+    holdUserInput = searchOption + req.query.userSearch;
+    value = 0;
+  }
+  else { 
+    holdUserInput = req.query.userSearch; 
+    value = 1;
+  }
+
+  // Functions will return strings without "intitle:" or "inauthor:"
+  returnFixedString(holdUserInput); 
+  returnFixedTitle(req.query.userSearch); 
+
+  // Below is to transverse pages and display appropiate results
+  if (req.query.backpage) { 
+    index = index - numOfBooksShown; 
+  } 
+  if (req.query.nextpage) { 
+    index = index + numOfBooksShown; 
+  }
+
+  // Last Page, dont render out of scope books
+  if (req.query.fillRemaining) { 
+    maxResults = req.query.leftOver - index; 
+  }
   
   axios({
     url: `https://www.googleapis.com/books/v1/volumes`,
@@ -385,20 +434,20 @@ app.get("/searchbarresult", auth, (req,res) => {
     },
     params: {
       q: userSearch,
-      // Address "maxResults" below when dealing with "back" and "next" button functionality
       startIndex: index,
       maxResults: maxResults,
       apikey: process.env.API_KEY, 
     },
   })
 
-    .then(results => {
+    .then(results => { 
       returnEstimatedTotalItems(results.data.totalItems); 
       res.render('pages/searchbarresult', { 
         results: totalItems,
         books: results.data.items,
-        // Substringed user input to get rid of "intitle:"
-        searched: userSearch.substr(8,userSearch.length),
+        title: title,
+        searched: userSearch,
+        searchOption: searchOption,
         currentIndex: index,
         counter: 0,
         lowEstimate: lowEstimate, 
