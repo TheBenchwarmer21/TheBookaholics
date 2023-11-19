@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%- include ('../partials/header') %>
+<div class="col"><%- include ('../partials/message') %></div>
 <html>
 
 
@@ -133,11 +134,31 @@
                                     <p class="card-text"> No Description </p>
                                 <% } %>
                             </div>
-
+                            <!-- Counter makes sure last page doesn't count out of scope -->
+                            <% counter = counter + 1; %>
                             <div class="card-footer text-muted" style="background-color:#CFB997;">
-                                <!-- Link buttons to proper functionality(Ex: Suman adds pop-up here) -->
-                                <a href="#" class="btn btn-secondary" style="float: left" > Add To Shelf </a>
-                                <% counter = counter + 1; %>
+                                <!-- Add Book Button -->
+                                <form action="/searchbarresult" method="POST">
+                                    <div>
+                                        <input name="book_name" value="<%= ABook.volumeInfo.title %>" hidden> <!-- Add title -->
+
+                                        <!-- Add author, if any -->
+                                        <% if (ABook.volumeInfo.authors) { %>
+                                            <input name="author" value="<%= ABook.volumeInfo.authors[0] %>" hidden>
+                                        <% } else { %>
+                                            <input name="author" value="No Author" hidden>
+                                        <% } %>
+
+                                        <!-- Add book URL, if any -->
+                                        <% if (ABook.volumeInfo.previewLink) { %>
+                                            <input name="book_url" value="<%= ABook.volumeInfo.previewLink %>" hidden>
+                                        <% } else { %>
+                                            <input name="bood_url" value="No URL" hidden>
+                                        <% } %>
+                                        
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary" style="float: left"> Add Book </button>
+                                </form>
 
                                 <!-- Suman's Pop-up Code: -->
                                 <button type="button" class="btn btn-secondary" style="float: right" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
