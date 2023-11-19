@@ -223,7 +223,9 @@ app.get('/welcome', auth, (req, res) => {
 
 app.get('/home', auth, (req, res) => {
   resetGlobalVariables();
-  res.render('pages/home');
+  res.render('pages/home', { 
+    User: req.session.user.username,
+  });
 });
 
 
@@ -334,6 +336,7 @@ let value = 0; // When 0, store value else never change value
 let userSearch = ""; 
 let searchOption = ""; 
 let title = ""; 
+let message = ""; 
 
   // The "totalItems" from Google Books API is an inaccurate piece of garbage that also
   // increments value every time the page renders, to combat this, I return the smallest value of totalItems 
@@ -385,6 +388,7 @@ function resetGlobalVariables() {
   userSearch = ""; 
   searchOption = ""; 
   title = ""; 
+  message = ""; 
 }
 
 
@@ -393,6 +397,13 @@ app.get("/searchbarresult", auth, (req,res) => {
   // Immediately check if variables need to be reset
   if (req.query.resetVariables) { 
     resetGlobalVariables();  
+  }
+
+  if (req.query.message) { 
+    message = req.query.message;
+  }
+  else { 
+    message = ""; 
   }
 
   let holdUserInput; // "New" input that I don't want to actually pass to Google Books API
@@ -453,6 +464,7 @@ app.get("/searchbarresult", auth, (req,res) => {
         lowEstimate: lowEstimate, 
         highEstimate: highEstimate,
         numOfBooksShown: numOfBooksShown,
+        message: message,
       }); 
     })
     .catch(err => {
@@ -462,6 +474,66 @@ app.get("/searchbarresult", auth, (req,res) => {
       });
     });
 });
+
+app.post('/searchbarresult', async (req, res) => { 
+  // Modified Cooper's code for adding books - Oscar
+  const isTest = req.get('Test-Header') === 'unit-test' // The var isTest will be true if the test header = unit-test. There will be no test header if the register route is being called from anything other than mocha/chai tests. 
+  try {
+
+    const existingBook = await db.one('SELECT FROM books WHERE book_name = $1 AND author = $2', [req.body.book_name, req.body.author]); // If this fails, i.e. there are no rows that contain the username that is being registered, the code will jump to the catch block, nothing else in the try block will run. 
+    res.status(400);
+    // This will run if a user with the entered username already exists. 
+    if(isTest) { // If this route is being called by a test, return a json
+      res.json({message: 'Book already exists in the users collection! '});
+    } 
+    else // If this route is being called by anything other than a test, render page with error message. 
+    { 
+      res.redirect("/searchbarresult?message=Book is already in your collection!");
+    }
+    
+  } catch (error) {
+    const newuser = `INSERT INTO books (book_url, book_name, author) VALUES ($1, $2, $3) RETURNING *;`;     // newuser containing username and password
+  
+    db.any(newuser, [
+        req.body.book_url,
+        req.body.book_name,
+        req.body.author,
+    ])
+    .then((data) => { 
+      // Below section adds the id's to "books_to_users"
+      const book_id = data[0].book_id;
+      const user_id = req.session.user.user_id;
+        // Display successful registration to the user. 
+        if(isTest) {
+          res.json({message: "Added book to collection"});
+        } else {
+          const addConnection = `INSERT INTO books_to_users(book_id, user_id) VALUES ($1, $2) RETURNING *;`;
+          db.any(addConnection, [ 
+            book_id, 
+            user_id,
+          ])
+          .then((data1) => { 
+            res.redirect("/searchbarresult?message=Book has been added to the collection!");
+          })
+
+          .catch((err1) => { 
+            res.redirect("/searchbarresult?message=Book is already in your collection!");
+          });
+          
+        }
+    })
+    .catch((err) => { 
+        // Assuming the error is due to a pre-existing user. In a real-world scenario, you'd want to be more specific about catching this error type.
+        res.status(400);
+        if(isTest) {
+          res.json({message: 'Username already exists, please try again.'});
+        } else {
+          res.redirect("/searchbarresult?message=Book is already in your collection!");
+        }
+    });
+  }
+});
+
 
 
   app.get('/logout', (req, res) => {
