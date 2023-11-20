@@ -217,12 +217,15 @@ app.post("/register", async (req, res) =>
 
 
 app.get('/welcome', auth, (req, res) => {
-  res.render('pages/welcome');
+  res.render('welcome', { username: req.session.user.username });
 });
 
 app.get('/home', auth, (req, res) => {
   resetGlobalVariables();
-  res.render('pages/home');
+  const username = req.session.user.username; // Adjust according to how you store user information
+
+    // Render the EJS template and pass the username in the response object
+    res.render('pages/home', { username: username });
 });
 
 
@@ -304,15 +307,22 @@ app.get('/add_reviews', auth, (req, res) => {
   res.render('pages/add_reviews', { successMessage });
 });
 
-// Route to add a new book review
 app.post('/add_reviews', auth, async (req, res) => {
   try {
-    const { title, author, review } = req.body;
-    await db.none('INSERT INTO reviews (title, author, review) VALUES ($1, $2, $3)', [title, author, review]);
-    res.redirect('/pages/add_reviews?message=Review added successfully');
+    // Destructure request body to get review details
+    const { review_title, username, review, rating } = req.body;
+
+    // Insert the new review into the database
+    const insertQuery = 'INSERT INTO reviews (review_title, username, review, rating) VALUES ($1, $2, $3, $4)';
+    await db.none(insertQuery, [review_title, username, review, rating]);
+
+    // Redirect with a success message
+    res.redirect('/reviews?message=Review added successfully'); // Assuming '/reviews' is the route where reviews are displayed
   } catch (error) {
     console.error("Error adding review:", error);
-    res.render('pages/error', { message: "Error adding review." });
+
+    // Render the error page with a message
+    res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
   }
 });
 
