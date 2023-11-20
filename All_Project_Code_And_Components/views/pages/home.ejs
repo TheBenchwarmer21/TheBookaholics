@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <%- include ('../partials/header') %>
 <html>
+
+<!-- Adds Background Image -->
+<style>
+    body {
+      background-image: url('/img/BetterLibrary.jpeg');
+    }
+</style>
+
 <head>
     <title>Welcome</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
+
 <body>
+<<<<<<< HEAD
     <div class="container mt-4">
         <script>
             var currentHour = new Date().getHours();
@@ -27,17 +37,69 @@
                 <input type="submit" value="Search" />
             </form>
         </center>
+=======
+    <header>
+        <!-- Existing header content... -->
+    </header>
 
-        <!-- Welcome the user -->
-        <center> <p> Welcome! Use the search bar to find a book title to read or add a review about! Note that 
-            the search bar is nearly case sensitive, so do your best in your accuracy. Above you can find 
-            links to your collection of books("My books"), a collection of your reviews("My Reviews" which 
-            within it you can read other users reviews!), and the ability to log out. So whenever your ready,
-            go ahead and use the search bar!  </p> </center>
-        <center> <img src="/img/Library.png" id="image" alt="No" </center>
-        
+    <!-- <p> below is for spacing purposes -->
+    <p> </p>
+>>>>>>> c9a09ed32c0ddc8c61cafa73243ad8fead343d19
 
-    </div>
+    <center>
+        <div class="card" style="width: 900px; background-color: #BC9E82;">
+            <!-- Suman's Welcome Message based on time -->
+            <script>
+                var currentHour = new Date().getHours();
+                var greeting;
+                if (currentHour < 12) {
+                    greeting = "Good Morning";
+                } else if (currentHour < 18) {
+                    greeting = "Good Afternoon";
+                } else {
+                    greeting = "Good Evening";
+                }
+            </script>
+            <h1><center><script>document.write(greeting)</script> <%- User %> </center></h1>
+            <!-- End of Suman Code -->
+            
+
+            <!-- Search Form -->
+            <div>
+                    <form action="/searchbarresult" method="GET">
+                        <!-- Title Search -->
+                        <div class="form-group row">
+                            <!-- Search Button -->
+                            <div class="ml-auto" style="text-align:center">
+                                <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" required />
+                                <button type="submit" style="background-color: #BC9E82; color:black" class="btn btn-dark" value="Search"> Search </button>
+                            </div>
+
+                            <!-- <p> below is for spacing purposes -->
+                            <p> </p>
+                            
+                            <!-- Search by Author or Title -->
+                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-secondary active">
+                                  <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
+                                </label>
+                                <label class="btn btn-secondary">
+                                  <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
+                                </label>
+                              </div>
+                        </div>
+                    </form>
+
+            </div>
+
+            <!-- Welcome the user -->
+            <center> <p style="font-family: 'Times New Roman'; font-size: 20px;"> Welcome! Use the search bar to find a book title to read or add a review about! Note that 
+                the search bar is nearly case sensitive, so do your best in your accuracy. Above you can find 
+                links to your collection of books("My books"), a collection of your reviews("My Reviews" which 
+                within it you can read other users reviews!), and the ability to log out. So whenever your ready,
+                go ahead and use the search bar!  </p> </center>
+        </div>
+    
 </body>
 </html>
 <%- include ('../partials/footer') %>
