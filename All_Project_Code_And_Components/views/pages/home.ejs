@@ -15,43 +15,8 @@
 </head>
 
 <body>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    <header>
-        <!-- Existing header content... -->
-    </header>
 
->>>>>>> parent of 85a4a54 (Fixed the routing issue after adding a review, removed login tab, added username after the greeting;)
-    <div class="container mt-4">
-        <script>
-            var currentHour = new Date().getHours();
-            var greeting;
-            if (currentHour < 12) {
-                greeting = "Good Morning";
-            } else if (currentHour < 18) {
-                greeting = "Good Afternoon";
-            } else {
-                greeting = "Good Evening";
-            }
-        </script>
-        <h2><center><script>document.write(greeting)</script></center></h2>
-        
-        <!-- Search Form -->
-        <center>
-            <form action="/searchbarresult" method="GET">
-                <input type="text" id="userSearch" placeholder="Search" name="userSearch" />
-                <input type="submit" value="Search" />
-            </form>
-        </center>
-=======
-    <header>
-        <!-- Existing header content... -->
-    </header>
-
-    <!-- <p> below is for spacing purposes -->
-    <p> </p>
->>>>>>> c9a09ed32c0ddc8c61cafa73243ad8fead343d19
+    
 
     <center>
         <div class="card" style="width: 900px; background-color: #BC9E82;">
@@ -67,8 +32,7 @@
                     greeting = "Good Evening";
                 }
             </script>
-            <h1><center><script>document.write(greeting)</script> <%- User %> </center></h1>
-            <!-- End of Suman Code -->
+            <h1><center><script>document.write(greeting)</script> <%- username %> </center></h1>            <!-- End of Suman Code -->
             
 
             <!-- Search Form -->
