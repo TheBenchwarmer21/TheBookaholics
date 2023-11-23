@@ -260,36 +260,27 @@ app.get('/myreviews', auth, (req, res) => {
 });
 
 
-app.get('/Mybooks', (req, res) => 
-{
-  console.log('Rendering Mybooks page');
-
+app.get('/Mybooks', (req, res) => {
   if (req.session.user === undefined) {
-
-    res.render('pages/Mybooks', { 
-      Mybooks: []
-    });
-
+    res.render('pages/Mybooks', { Mybooks: [] });
   } else {
+    
+    const userId = req.session.user.user_id;
+    
+   
+    const bookQuery = 'SELECT b.* FROM books b INNER JOIN books_to_users btu ON b.book_id = btu.book_id WHERE btu.user_id = $1;';
 
-    const bookQuery = 'SELECT * FROM books WHERE username = $1;';
-
-    db.any(bookQuery, [req.session.user.username])
+    db.any(bookQuery, [userId])
       .then((Mybooks) => {
-
-        res.render('pages/Mybooks', { 
-          Mybooks: Mybooks
-        });
+        res.render('pages/Mybooks', { Mybooks: Mybooks });
       })
       .catch((err) => {
         console.error('Error fetching books:', err);
-        res.render('pages/Mybooks', { 
-          Mybooks: [],
-          error: 'Unable to fetch books at this time.'
-        });
+        res.render('pages/Mybooks', { Mybooks: [], error: 'Unable to fetch books at this time.' });
       });
   }
 });
+
 
 
 
@@ -311,25 +302,42 @@ app.get('/add_reviews', auth, (req, res) => {
 
 // Route to add a new book review
 app.post('/add_reviews', auth, async (req, res) => {
-    try {
-      // Destructure request body to get review details
-      const { review_title, username, review, rating } = req.body;
-  
-      // Insert the new review into the database
-      const insertQuery = 'INSERT INTO reviews (review_title, username, review, rating) VALUES ($1, $2, $3, $4)';
-      await db.none(insertQuery, [review_title, username, review, rating]);
-  
-      // Redirect with a success message
-      res.redirect('/reviews?message=Review added successfully'); // Assuming '/reviews' is the route where reviews are displayed
-    } catch (error) {
-      console.error("Error adding review:", error);
-  
-      // Render the error page with a message
-      res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
-    }
-  });
+  try {
+    const { review_title, review, rating } = req.body;
+    const username = req.session.user.username; 
+    const insertQuery = 'INSERT INTO reviews (review_title, username, review, rating) VALUES ($1, $2, $3, $4)';
+    await db.none(insertQuery, [review_title, username, review, rating]);
 
+    
+    res.redirect('/myreviews?message=Review added successfully');
+  } catch (error) {
+    console.error("Error adding review:", error);
+    res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
+  }
+});
+// my collection read_book and remove book routing
+app.get('/read_book', (req, res) => {
+  const bookId = req.params.bookId;
+  //anybody have an idea how to ger the assosiated book id 
+  // Logic to fetch the book's content
+  res.send(`anybody have an idea how to get the assosiated book id or should we use api url which should have been collected when we add the book to the collection right${bookId}`);
+});
+//currently not working: could not retrieve bookId
+app.post('/remove_book', (req, res) => {
+  const bookId = req.body.bookId; // Retrieve bookId from the request body is not working
+  const userId = req.session.user.user_id;
 
+  const deleteQuery = 'DELETE FROM books_to_users WHERE book_id = $1 AND user_id = $2';
+
+  db.none(deleteQuery, [bookId, userId])
+    .then(() => {
+      res.redirect('/Mybooks');
+    })
+    .catch(err => {
+      console.error('Error removing book:', err);
+      res.status(500).send('Error removing book');
+    });
+});
 
 
 

@@ -12,16 +12,14 @@
             <% reviews.forEach(function(review) { %>
                 <div class="review mb-3">
                     <h3><%= review.username %>'s Review</h3>
+                    <h4><%= review.review_title %></h4>
                     <p><strong>Review:</strong> <%= review.review %></p>
-                    <!-- Placeholder for rating; hide or remove if not used -->
                     <p><strong>Rating:</strong> <%= review.rating %></p>
                 </div>
             <% }); %>
         <% } else { %>
             <p>No reviews found.</p>
         <% } %>
-
-        <a href="/add_reviews" class="btn btn-primary">Add a New Review</a>
     </div>
 </body>
 </html>

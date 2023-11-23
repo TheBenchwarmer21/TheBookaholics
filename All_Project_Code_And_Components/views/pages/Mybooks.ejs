@@ -1,18 +1,17 @@
 <%- include ('../partials/header') %>
 
 <main>
-
     <div class="container">
         <!-- Banner  -->
         <div class="banner">
             <h1>My Book Collection</h1>
         </div>
 
-        <!-- Search bar -->
+        <!-- Search bar 
         <div class="search-collection">
             <input type="text" class="search-bar" placeholder="Search Collection...">
         </div>
-
+-->
         <!-- Book collection  -->
         <table class="table">
             <thead>
@@ -28,16 +27,61 @@
                         <td><%= book.title %></td>
                         <td><%= book.author %></td>
                         <td>
-                            <button class="btn-read">Read</button>
-                            <button class="btn-remove">Remove</button>
-                            <button class="btn-add-review">Add Review</button>
+                            <!-- Read Button -->
+                            <form action="/read_book/<%= book.id %>" method="get" style="display: inline;">
+                                <input type="submit" value="Read" class="btn-read">
+                            </form>
+                            
+                            <!-- Remove Button -->
+                            <form action="/remove_book/<%= book.id %>" method="post" style="display: inline;">
+                                <input type="submit" value="Remove" class="btn-remove" style="background-color: lightcoral;">
+                            </form>
+
+                            <!-- Other buttons... -->
+
+                            <!-- Add Review Button -->
+                            <button type="button" class="btn-add-review" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
+                                Add Review
+                            </button>
+
+                            <!-- Modal for Adding Review -->
+                            <div class="modal fade" id="addReviewModal-<%= book.id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.id %>" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel-<%= book.id %>">Add a New Review for <%= book.title %></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="/add_reviews">
+                                                <input type="hidden" name="book_id" value="<%= book.id %>">
+                                                <div class="form-group">
+                                                    <label for="review_title">Review Title:</label>
+                                                    <input type="text" class="form-control" id="review_title" name="review_title" required>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="review">Review:</label>
+                                                    <textarea class="form-control" id="review" name="review" required></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="rating">Rating:</label>
+                                                    <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
     </div>
-
 </main>
 
 <%- include ('../partials/footer') %>

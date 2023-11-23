@@ -1,51 +1,59 @@
 
 <%- include ('../partials/header') %>
+<!-- Adds Background Image -->
+<style>
+    body {
+      background-image: url('/img/BetterLibrary.jpeg');
+    }
+    
+</style>
 
 
 <main>
-    
+     <!--
     <div class="container">
+        
         <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> Your Reviews</h1>
         <div class="row row-cols-2 rows-cols-md-2 g-4">
-        
         <% myreviews.forEach(myreview => { %>
             <% var shortenedReview = myreview.review.slice(0,250); %>
             <div class="col">
                 <div class="card" style="height:300px;">
                     <div class="card-body">
                         <h5 class="card-title"><%= myreview.review_title %></h5>
+                        
                         <h6 class="card-subtitle text-body-secondary" style="padding-bottom: 20px;">Posted by: <%= myreview.username %></h5>
                         <p class="card-text"><%= shortenedReview %> </p>
+                        
                     </div>
                 </div>
             </div>
         <% }); %>
-    </div>
+    </div>-->
 
-
-
-        <!-- 
-         <table class="table">
-         <thead>
+      
+ <!-- Table Layout for Reviews -->
+ <table class="table" style="margin-top: 40px;">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Review Title</th>
+            <th>Review</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% myreviews.forEach(myreview => { %>
             <tr>
-              <th>Username</th>
-              <th>Review</th>
-              <th>Rating</th>
+                <td><%= myreview.username %></td>
+                <td><%= myreview.review_title %></td>
+                <td><%= myreview.review %></td>
+                <td><%= myreview.rating %></td>
             </tr>
-        </thead>
-        <tbody>
-                <%myreviews.forEach(myreview => { %>
-                    <tr>
-                        <td><%= myreview.username%></td>
-                        <td><%= myreview.review%></td>
-                        <td><%= myreview.rating%></td>
-                    </tr>
-               <% });%>
-        </tbody>
-          </table>
-      </div>
-      -->
-
+        <% }); %>
+    </tbody>
+</table>
+</div>
 </main>
 
 <%- include ('../partials/footer') %>
