@@ -428,6 +428,14 @@ app.get("/searchbarresult", auth, (req,res) => {
   // Below is to keep the first input but never the second one
   if (req.query.searchOption) { 
     searchOption = req.query.searchOption;
+
+    if (searchOption == "intitle:") { 
+      searchType = "Showing Books Titled: "; 
+    }
+    else if (searchOption == "inauthor:") { 
+      searchType = "Showing Books by Author: "; 
+    }
+
     holdUserInput = searchOption + req.query.userSearch;
     value = 0;
   }
@@ -482,6 +490,7 @@ app.get("/searchbarresult", auth, (req,res) => {
         highEstimate: highEstimate,
         numOfBooksShown: numOfBooksShown,
         message: message,
+        searchType: searchType,
       }); 
     })
     .catch(err => {

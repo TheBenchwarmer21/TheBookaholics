@@ -24,7 +24,7 @@
                 for accurately since this search feature is case sensitive! </center> </h3>
 
             <% } else { %>
-                <h3 class="card-title"> <center> Showing Results For: <%- title %> </center> </h3>
+                <h3 class="card-title"> <center> <%- searchType %> <%- title %> </center> </h3>
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center> </h5>
             <% } %>
             
@@ -33,7 +33,7 @@
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Showing the last bit of results! </center> </h5>
 
             <% } else {  %> 
-                <h5 class="card-subtitle mb-2 text-muted"> <center> Showing results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </h5>
+                <h5 class="card-subtitle mb-2 text-muted"> <center> Showing Results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </h5>
             <% } %> 
         </div>
     </center>
