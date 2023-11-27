@@ -217,11 +217,11 @@ app.post("/register", async (req, res) =>
 });
 
 
-
+// added
 
 
 app.get('/welcome', auth, (req, res) => {
-    res.render('welcome', { username: req.session.user.username });
+    res.render('pages/welcome', { username: req.session.user.username });
   });
   
   app.get('/home', auth, (req, res) => {
