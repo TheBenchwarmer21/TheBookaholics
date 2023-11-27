@@ -289,7 +289,7 @@ app.get('/Mybooks', (req, res) => {
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
   try {
-    const reviews = await db.any('SELECT * FROM reviews'); // Assuming 'reviews' is your table name
+    const reviews = await db.any('SELECT * FROM reviews'); 
     res.render('pages/reviews', { reviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -316,21 +316,16 @@ app.post('/add_reviews', auth, async (req, res) => {
     res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
   }
 });
-// my collection read_book and remove book routing
-app.get('/read_book', (req, res) => {
-  const bookId = req.params.bookId;
-  //anybody have an idea how to ger the assosiated book id 
-  // Logic to fetch the book's content
-  res.send(`anybody have an idea how to get the assosiated book id or should we use api url which should have been collected when we add the book to the collection right${bookId}`);
-});
-//currently not working: could not retrieve bookId
+// my book colection, remove book routing
 app.post('/remove_book', (req, res) => {
-  const bookId = req.body.bookId; // Retrieve bookId from the request body is not working
-  const userId = req.session.user.user_id;
-
+  console.log(req.body); 
+  const book_id = req.body.bookId;
+  const user_id = req.session.user.user_id;
+  if (!book_id || isNaN(book_id)) {
+    return res.status(400).send('Invalid book ID');
+}
   const deleteQuery = 'DELETE FROM books_to_users WHERE book_id = $1 AND user_id = $2';
-
-  db.none(deleteQuery, [bookId, userId])
+  db.none(deleteQuery, [book_id, user_id])
     .then(() => {
       res.redirect('/Mybooks');
     })

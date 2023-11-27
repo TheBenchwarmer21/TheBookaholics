@@ -1,59 +1,72 @@
-
 <%- include ('../partials/header') %>
-<!-- Adds Background Image -->
+
 <style>
     body {
-      background-image: url('/img/BetterLibrary.jpeg');
+        
+        background-size: cover;
     }
-    
+
+    .reviews-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .review-card {
+        background-color: rgb(229, 221, 221);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        color: #333;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: #333;
+        font-size: 1em;
+    }
+
+    .card-rating {
+        font-weight: bold;
+        color: #4CAF50;
+        margin-top: 10px;
+    }
+
+    .card-subtitle {
+        color: #666;
+        font-size: 1em;
+        margin-top: 15px;
+        text-align: right;
+    }
 </style>
 
-
 <main>
-     <!--
     <div class="container">
+        <h1 class="text-center" style="color: rgb(13, 13, 13); padding-top: 20px; padding-bottom: 20px;">Your Reviews</h1>
         
-        <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> Your Reviews</h1>
-        <div class="row row-cols-2 rows-cols-md-2 g-4">
-        <% myreviews.forEach(myreview => { %>
-            <% var shortenedReview = myreview.review.slice(0,250); %>
-            <div class="col">
-                <div class="card" style="height:300px;">
+        <div class="reviews-container">
+            <% myreviews.forEach(myreview => { %>
+                <% var shortenedReview = myreview.review.slice(0,250); %>
+                <div class="review-card">
                     <div class="card-body">
                         <h5 class="card-title"><%= myreview.review_title %></h5>
-                        
-                        <h6 class="card-subtitle text-body-secondary" style="padding-bottom: 20px;">Posted by: <%= myreview.username %></h5>
-                        <p class="card-text"><%= shortenedReview %> </p>
-                        
+                        <p class="card-text"><%= shortenedReview %><% if (myreview.review.length > 250) { %>...<% } %></p>
+                        <div class="card-rating">Rating: <%= myreview.rating %>/5</div>
+                        <h6 class="card-subtitle">Posted by: <%= myreview.username %></h6>
                     </div>
                 </div>
-            </div>
-        <% }); %>
-    </div>-->
-
-      
- <!-- Table Layout for Reviews -->
- <table class="table" style="margin-top: 40px;">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Review Title</th>
-            <th>Review</th>
-            <th>Rating</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% myreviews.forEach(myreview => { %>
-            <tr>
-                <td><%= myreview.username %></td>
-                <td><%= myreview.review_title %></td>
-                <td><%= myreview.review %></td>
-                <td><%= myreview.rating %></td>
-            </tr>
-        <% }); %>
-    </tbody>
-</table>
-</div>
+            <% }); %>
+        </div>
+    </div>
 </main>
 
 <%- include ('../partials/footer') %>

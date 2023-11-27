@@ -1,5 +1,38 @@
 <%- include ('../partials/header') %>
 
+<style>
+    .btn-action {
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        background-color: #6d7f6e; /* Light green */
+    }
+
+    .btn-action:hover {
+        background-color: #0bf139; /* Slightly darker green on hover */
+    }
+
+    .btn-remove {
+        background-color: rgb(134, 71, 71); /* Light red */
+    }
+
+    .btn-remove:hover {
+        background-color: rgb(236, 59, 59); /* Slightly darker red on hover */
+    }
+
+    .external-link-icon {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+</style>
+
 <main>
     <div class="container">
         <!-- Banner  -->
@@ -7,11 +40,6 @@
             <h1>My Book Collection</h1>
         </div>
 
-        <!-- Search bar 
-        <div class="search-collection">
-            <input type="text" class="search-bar" placeholder="Search Collection...">
-        </div>
--->
         <!-- Book collection  -->
         <table class="table">
             <thead>
@@ -24,23 +52,27 @@
             <tbody>
                 <% Mybooks.forEach(book => { %>
                     <tr>
-                        <td><%= book.title %></td>
+                        <td><%= book.book_name %></td>
                         <td><%= book.author %></td>
                         <td>
                             <!-- Read Button -->
-                            <form action="/read_book/<%= book.id %>" method="get" style="display: inline;">
-                                <input type="submit" value="Read" class="btn-read">
-                            </form>
-                            
-                            <!-- Remove Button -->
-                            <form action="/remove_book/<%= book.id %>" method="post" style="display: inline;">
-                                <input type="submit" value="Remove" class="btn-remove" style="background-color: lightcoral;">
-                            </form>
+                            <% if (book.book_url) { %>
+                                <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
+                                    Read
+                                    <i class="external-link-icon">&#x2197;</i> <!-- External link icon -->
+                                </button>
+                            <% } else { %>
+                                <span>Not available</span>
+                            <% } %>
 
-                            <!-- Other buttons... -->
+                            <!-- Remove Button -->
+                            <form action="/remove_book" method="post" style="display: inline;">
+                                <input type="hidden" name="bookId" value="<%= book.book_id %>">
+                                <button type="submit" class="btn-action btn-remove">Remove</button>
+                            </form>
 
                             <!-- Add Review Button -->
-                            <button type="button" class="btn-add-review" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
+                            <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
                                 Add Review
                             </button>
 
