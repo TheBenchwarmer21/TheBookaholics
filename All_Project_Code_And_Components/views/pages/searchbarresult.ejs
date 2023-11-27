@@ -20,13 +20,52 @@
         <div class="card" style="width: 70rem; background-color: #CFB997;">
             <!-- Header Information -->
             <% if (results === 0) { %> 
-                <h3 class="card-title"> <center> No books with that title! Try another book or type the title you're looking 
-                for accurately since this search feature is case sensitive! </center> </h3>
+                <% if (searchOption === "intitle:") { %>
+                    <h3 class="card-title"> <center> No books found with that title! Try another book or type the title you're looking 
+                    for more accurately since this search feature is somewhat case sensitive! </center> </h3>
+                <% } else { %> 
+                    <h3 class="card-title"> <center> No books found with that author! Try another author or type the author you're looking 
+                        for more accurately since this search feature is somewhat case sensitive! </center> </h3>
+                <% } %>
+                <center>
+                    <!-- Get Search Bar -->
+                    <div class="card" style="width: 700px; background-color: #BC9E82;">
+                        <div>
+                            <h3> Search Again Below! </h3>
+                            <form action="/searchbarresult" method="GET">
+                                <input name="resetVariables" value="0" hidden /> <!-- Reset Gloal Variables -->
+                                <!-- <p> below is for spacing purposes -->
+                                <p> </p>
+                                
+                                <div class="form-group row">
+                                    <!-- Search Button -->
+                                    <div class="ml-auto" style="text-align:center">
+                                        <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" required />
+                                        <button type="submit" style="background-color: #BC9E82; color:black" class="btn btn-dark" value="Search"> Search </button>
+                                    </div>
+            
+                                    <!-- <p> below is for spacing purposes -->
+                                    <p> </p>
+                                    
+                                    <!-- Search by Author or Title -->
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-secondary active">
+                                        <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
+                                        </label>
+            
+                                        <label class="btn btn-secondary">
+                                        <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </center>
 
             <% } else { %>
                 <h3 class="card-title"> <center> <%- searchType %> <%- title %> </center> </h3>
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center> </h5>
-            <% } %>
             
             <!-- Last Page Implemenation -->
             <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
@@ -101,8 +140,11 @@
                         <div class="card text-center" >
                             <div class="card-header" style="background-color: #BC9E82;">
                                 <!-- Title and Author -->
-                                <h4> <%- ABook.volumeInfo.title %> </h4>
-                                <% if (ABook.volumeInfo.authors) { %>
+                                <% if (ABook.volumeInfo.title) { %>
+                                    <h4> <%- ABook.volumeInfo.title %> </h4>
+                                <% } else { %>
+                                    <h4> No Author Available! </h4>
+                                <% } if (ABook.volumeInfo.authors) { %>
                                     <p class="card-text"> Author:  <%- ABook.volumeInfo.authors[0] %> </p>
                                 <% } else { %>
                                     <p class="card-text"> No Author Available </p>
@@ -157,7 +199,7 @@
                                         <% } %>
                                         
                                     </div>
-                                    <button type="submit" class="btn btn-secondary" style="float: left"> Add Book </button>
+                                    <button type="submit" class="btn btn-secondary" style="float: left"> Add Book To Your Collection! </button>
                                 </form>
 
                                 <!-- Suman's Pop-up Code: -->
@@ -229,4 +271,5 @@
         <p> </p>
 
     </div>
+    <% } %>
 </main>
