@@ -93,11 +93,10 @@
         text-align: right;
     }
    */
-   */
 
     .bborder {
       border: 2px solid transparent;
-      border-radius: 25px;
+      border-radius: 35px;
     }
 
     .bborder:hover {
@@ -107,20 +106,75 @@
     
 </style>
 
+<script>
+  function getCurrentPageIndex() {
+    var pages = document.querySelectorAll('#reviewContainer > .row.row-cols-2.rows-cols-md-2.g-4'); // Gets parent element, which is the reviewcontainer
+    var currentPage = document.querySelector(`#reviewContainer > [style*="display: flex;"]`); // Selects the element in the reviewcontainer that has "display: flex;", only the current page will have such styling.
+    var children = Array.from(pages); // Gets the child elements of the pages array
+    return children.indexOf(currentPage) + 1; // Returning index of current page.
+  }
+
+  function getMaxPages() {
+    var pages = document.querySelectorAll('#reviewContainer > .row.row-cols-2.rows-cols-md-2.g-4');
+    var children = Array.from(pages); // Gets the child elements of the pages array
+    return children.length;
+  }
+
+  function showPage(pageNum) {
+    var reviewPages = document.querySelectorAll('.row.row-cols-2.rows-cols-md-2.g-4');
+    reviewPages.forEach(page => {
+      page.style.display = 'none';
+    });
+    
+    var currentPage = document.querySelector(`#reviewContainer > .row.row-cols-2.rows-cols-md-2.g-4:nth-of-type(${pageNum})`);
+    if (currentPage) {
+      currentPage.style.display = 'flex';
+    }
+
+
+    var previousButton = document.querySelector('#previousPage');
+    var nextButton = document.querySelector('#nextPage');
+    var pageButton = document.querySelector(`#page${pageNum}`);
+
+    if(pageNum === 1) // Disables previous button if the shown page is the first page, ensures the next button is not disabled.
+    {
+      previousButton.classList.add('disabled');
+      nextButton.classList.remove('disabled');
+    } else if (pageNum === getMaxPages()) { // Disables next button if the shown page is the last page, ensures the previous button is not disabled.
+      previousButton.classList.remove('disabled');
+      nextButton.classList.add('disabled');
+    } else { // Ensures that neither the next or previous buttons are disabled when a middle page is shown. 
+      previousButton.classList.remove('disabled');
+      nextButton.classList.remove('disabled');
+    }
+    var pageNumbers = document.querySelectorAll('.ppage');
+    pageNumbers.forEach(page => {
+      page.classList.remove('active');
+    });
+    var pageButton = document.querySelector(`#page${pageNum}`);
+    pageButton.classList.add('active');
+  }
+</script>
+
 <main>
   
-    <div class="container">
+    <div class="container" id="reviewContainer" style="height: 774px;">
         <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> Your Reviews</h1>
         <% if (typeof message !== 'undefined' && message) { %>
           <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
             <%= message %>
           </div>
         <% } %>
-        <div class="row row-cols-2 rows-cols-md-2 g-4">
-        
-        <% myreviews.forEach(myreview => { %>
+        <% if(page == 1) { %>
+          <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: flex">
+          <% } else { %>
+            <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: none">
+            <% } %>
+        <% var cardsPerPage = 6 %>
+        <% var pageIndex = 1 %>
+        <% myreviews.forEach((myreview, index) => { %>
             <% var shortenedReview = myreview.review.slice(0,250); %>
-            <div class="col">
+              <div class="col">
               <a href="#" data-bs-toggle="modal" data-bs-target="#reviewModal<%= myreview.review_id %>" style="color: inherit; text-decoration: none;">
                 <div class="card bborder" style="height:210px;">
                     <div class="card-body rounded-5" style='background-color: gainsboro;'>
@@ -204,6 +258,7 @@
                               <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" value="<%= myreview.rating %>" required>
                           </div>
                           <input type="hidden" name="review_id" id="review_id" value="<%= myreview.review_id %>">
+                          <input type="hidden" name="page_num" id="page_num" value="<%= pageIndex %>">
                           <button type="submit" class="btn btn-primary">Save Edits</button>
                       </form>
                   </div>
@@ -241,9 +296,22 @@
             </div>
           </div>
           
+
+          <% if((index + 1) % cardsPerPage === 0 || index === myreviews.length - 1) { %>
+          </div>
+          <% if(index !== myreviews.length - 1) { %>
+            <% pageIndex++ %>
+            <% if(pageIndex == page) { %>
+              <div class="row row-cols-2 rows-cols-md-2 g-4" style="display:flex" >
+            <% } else { %>
+              <div class="row row-cols-2 rows-cols-md-2 g-4" style="display:none" >
+            <% } %>
+            
+          <% } %>
+          <% } %>
         <% }); %>
       </div>
-	
+      
 
 
       
@@ -269,6 +337,30 @@
     </tbody>
 </table>
 -->
+</div>
+
+<div class="container" style="padding-top: 50px;">
+  <nav>
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled" id="previousPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() - 1)">Previous</a></li>
+      <%if(page == 1) { %>
+        <li class="page-item ppage active" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
+        <% } else { %>
+          <li class="page-item ppage" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
+        <% } %>
+      
+      <% var pageNum = Math.ceil(myreviews.length / cardsPerPage); %>
+        <% for(var i = 2; i <= pageNum; i++) { %>
+          <% if(i == page) { %>
+            <li class="page-item ppage active" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
+          <% } else { %>
+            <li class="page-item ppage" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
+          <% } %>
+          
+        <% } %>
+      <li class="page-item" id="nextPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() + 1)">Next</a></li>
+    </ul>
+  </nav>
 </div>
 <!-- 
         <h1 class="text-center" style="color: rgb(13, 13, 13); padding-top: 20px; padding-bottom: 20px;">Your Reviews</h1>
@@ -307,6 +399,7 @@
     </div>
   -->
 </main>
+
 
 
 <%- include ('../partials/footer') %>

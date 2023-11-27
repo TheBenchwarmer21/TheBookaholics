@@ -240,25 +240,45 @@ app.get('/myreviews', auth, (req, res) => {
   if(req.session.user === undefined)
   {
     res.render('pages/myreviews', {
-      myreviews: []
+      myreviews: [],
+      page: 1
     });
 
   } else {
 
     const reviewQuery = 'SELECT reviews.*, books.* FROM reviews INNER JOIN books_to_reviews ON reviews.review_id = books_to_reviews.review_id INNER JOIN books ON books_to_reviews.book_id = books.book_id WHERE reviews.username = $1;';
-
-    db.any(reviewQuery, [req.session.user.username])
+    if(req.query.page_num === undefined) {
+      db.any(reviewQuery, [req.session.user.username])
       .then((myreviews) => {
         res.render('pages/myreviews', {
-          myreviews
+          myreviews,
+          page: 1
         });
       })
       .catch((err) => {
         res.render('pages/myreviews', {
           myreviews: [],
+          page: 1,
           error: true
         });
       });
+    } else {
+      db.any(reviewQuery, [req.session.user.username])
+      .then((myreviews) => {
+        res.render('pages/myreviews', {
+          myreviews,
+          page: req.query.page_num
+        });
+      })
+      .catch((err) => {
+        res.render('pages/myreviews', {
+          myreviews: [],
+          page: req.query.page_num,
+          error: true
+        });
+      });
+    }
+    
   }
 });
 
@@ -319,7 +339,7 @@ app.post('/edit_review', auth, async (req, res) => {
   try {
     const editQuery = 'UPDATE reviews SET review_title = $1, review = $2, rating = $3 WHERE review_id = $4;';
     db.none(editQuery, [req.body.review_title, req.body.review, req.body.rating, req.body.review_id]);
-    res.redirect('/myreviews');
+    res.redirect(`/myreviews?page_num=${req.body.page_num}`);
   } catch (error) {
     console.log("Error editing review. Please try again.");
     res.redirect('/myreviews');
