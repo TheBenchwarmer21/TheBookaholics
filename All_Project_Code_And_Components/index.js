@@ -200,6 +200,8 @@ app.post("/register", async (req, res) =>
         } else {
           res.render("pages/login", { message: "Registration successful" });
           
+          res.render("pages/login", { message: "Registration successful" });
+          
         }
     })
     .catch((err) => { 
@@ -286,6 +288,7 @@ app.get('/Mybooks', (req, res) => {
 app.get('/reviews', auth, async (req, res) => {
   try {
     const reviews = await db.any('SELECT * FROM reviews'); 
+    const reviews = await db.any('SELECT * FROM reviews'); 
     res.render('pages/reviews', { reviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -312,8 +315,38 @@ app.post('/add_reviews', auth, async (req, res) => {
     res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
   }
 });
+
+app.post('/edit_review', auth, async (req, res) => {
+  try {
+    const editQuery = 'UPDATE reviews SET review_title = $1, review = $2, rating = $3 WHERE review_id = $4;';
+    db.none(editQuery, [req.body.review_title, req.body.review, req.body.rating, req.body.review_id]);
+    res.redirect('/myreviews');
+  } catch (error) {
+    console.log("Error editing review. Please try again.");
+    res.redirect('/myreviews');
+  }
+});
+
+app.post('/delete_review', auth, async (req, res) => {
+  try {
+    const deleteQuery = 'DELETE FROM books_to_reviews WHERE review_id = $1; DELETE FROM reviews WHERE review_id = $1;';
+    db.none(deleteQuery, [req.body.review_id]);
+    res.redirect('/myreviews');
+  } catch (error) {
+    console.log(error)
+    res.redirect('/myreviews');
+  }
+});
+
+
 // my book colection, remove book routing
 app.post('/remove_book', (req, res) => {
+  console.log(req.body); 
+  const book_id = req.body.bookId;
+  const user_id = req.session.user.user_id;
+  if (!book_id || isNaN(book_id)) {
+    return res.status(400).send('Invalid book ID');
+}
   console.log(req.body); 
   const book_id = req.body.bookId;
   const user_id = req.session.user.user_id;
