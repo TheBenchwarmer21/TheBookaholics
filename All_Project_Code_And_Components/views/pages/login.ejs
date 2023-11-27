@@ -2,6 +2,11 @@
 
 <main>
   <div class="container">
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
+        <%= message %>
+      </div>
+    <% } %>
     <div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
       <h2>Login</h2>
 

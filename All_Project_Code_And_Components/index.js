@@ -198,7 +198,8 @@ app.post("/register", async (req, res) =>
         if(isTest) {
           res.json({message: "Registration successful"});
         } else {
-          res.render("pages/register", { message: "Registration successful" });
+          res.render("pages/login", { message: "Registration successful" });
+          
         }
     })
     .catch((err) => { 
