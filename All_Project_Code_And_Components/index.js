@@ -243,7 +243,7 @@ app.get('/myreviews', auth, (req, res) => {
 
   } else {
 
-    const reviewQuery = 'SELECT * FROM reviews WHERE username = $1;';
+    const reviewQuery = 'SELECT reviews.*, books.* FROM reviews INNER JOIN books_to_reviews ON reviews.review_id = books_to_reviews.review_id INNER JOIN books ON books_to_reviews.book_id = books.book_id WHERE reviews.username = $1;';
 
     db.any(reviewQuery, [req.session.user.username])
       .then((myreviews) => {
@@ -281,10 +281,6 @@ app.get('/Mybooks', (req, res) => {
       });
   }
 });
-
-
-
-
   
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
