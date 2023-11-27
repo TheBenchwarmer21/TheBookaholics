@@ -288,7 +288,6 @@ app.get('/Mybooks', (req, res) => {
 app.get('/reviews', auth, async (req, res) => {
   try {
     const reviews = await db.any('SELECT * FROM reviews'); 
-    const reviews = await db.any('SELECT * FROM reviews'); 
     res.render('pages/reviews', { reviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
@@ -341,12 +340,6 @@ app.post('/delete_review', auth, async (req, res) => {
 
 // my book colection, remove book routing
 app.post('/remove_book', (req, res) => {
-  console.log(req.body); 
-  const book_id = req.body.bookId;
-  const user_id = req.session.user.user_id;
-  if (!book_id || isNaN(book_id)) {
-    return res.status(400).send('Invalid book ID');
-}
   console.log(req.body); 
   const book_id = req.body.bookId;
   const user_id = req.session.user.user_id;
