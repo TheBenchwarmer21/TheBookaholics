@@ -116,21 +116,21 @@ app.post('/delete_user', (req, res) => {
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('pages/welcome');
   }
   next();
 };
 
 
 app.use((req, res, next) => {
-  const openPaths = ['/', '/login', '/register'];
+  const openPaths = ['/', '/login', '/register','/welcome'];
   if (openPaths.includes(req.path)) return next();
   return auth(req, res, next);
 });
 
 
 app.get("/", (req, res) => {
-  res.redirect('/login'); // Only keep this redirect
+  res.redirect('/welcome'); // Only keep this redirect
 });
 
 
@@ -221,7 +221,7 @@ app.post("/register", async (req, res) =>
 
 
 app.get('/welcome', auth, (req, res) => {
-    res.render('pages/welcome', { username: req.session.user.username });
+    res.render('pages/Welcome', { username: req.session.user.username });
   });
   
   app.get('/home', auth, (req, res) => {
