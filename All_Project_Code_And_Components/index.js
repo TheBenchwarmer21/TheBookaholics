@@ -134,7 +134,6 @@ app.get("/", (req, res) => {
 });
 
 
-// close task for login and register code (task #62 here)
 app.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/home'); // If already logged in, go to home
   res.render('pages/login');
@@ -308,48 +307,13 @@ app.get('/Mybooks', (req, res) => {
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
   try {
-    const reviews = await db.any('SELECT * FROM reviews');
-    let groupedReviews = {};
-
-    // Group reviews by title
-    reviews.forEach(review => {
-      if (!groupedReviews[review.review_title]) {
-        groupedReviews[review.review_title] = { reviews: [], averageRating: 0 };
-      }
-      groupedReviews[review.review_title].reviews.push(review);
-    });
-
-    // Calculate average rating for each title
-    for (let title in groupedReviews) {
-      let totalRating = groupedReviews[title].reviews.reduce((acc, review) => acc + Number(review.rating), 0);
-      let averageRating = totalRating / groupedReviews[title].reviews.length;
-      groupedReviews[title].averageRating = averageRating.toFixed(1); // Keeping one decimal
-      console.log(title, groupedReviews[title].averageRating); // Debugging
-    }
-
-    console.log(groupedReviews); // Debugging
-    res.render('pages/reviews', { groupedReviews });
+    const reviews = await db.any('SELECT * FROM reviews'); 
+    res.render('pages/reviews', { reviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.render('pages/error', { message: "Error fetching reviews." });
   }
 });
-
-
-
-function groupReviewsByTitle(reviews) {
-  return reviews.reduce((acc, review) => {
-    // If the title doesn't exist in the accumulator, add it
-    if (!acc[review.review_title]) {
-      acc[review.review_title] = [];
-    }
-    // Add the review to the appropriate title group
-    acc[review.review_title].push(review);
-    return acc;
-  }, {});
-}
-
-
 app.get('/add_reviews', auth, (req, res) => {
   const successMessage = req.query.message;
   res.render('pages/add_reviews', { successMessage });
@@ -612,7 +576,6 @@ app.post('/searchbarresult', async (req, res) => {
       WHERE book_name = '${values.book_name}' AND 
       author = '${values.author}'
       )
-
     SELECT *
     FROM books_to_users 
     INNER JOIN TEMP 

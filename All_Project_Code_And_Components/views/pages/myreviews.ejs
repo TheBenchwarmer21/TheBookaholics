@@ -16,35 +16,29 @@
         gap: 20px;
         padding: 20px;
     }
-
     .review-card {
         background-color: rgb(229, 221, 221);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         border-radius: 8px;
         overflow: hidden;
     }
-
     .card-body {
         padding: 15px;
     }
-
     .card-title {
         color: #333;
         font-size: 1.2em;
         margin-bottom: 10px;
     }
-
     .card-text {
         color: #333;
         font-size: 1em;
     }
-
     .card-rating {
         font-weight: bold;
         color: #4CAF50;
         margin-top: 10px;
     }
-
     .card-subtitle {
         color: #666;
         font-size: 1em;
@@ -60,35 +54,29 @@
         gap: 20px;
         padding: 20px;
     }
-
     .review-card {
         background-color: rgb(229, 221, 221);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         border-radius: 8px;
         overflow: hidden;
     }
-
     .card-body {
         padding: 15px;
     }
-
     .card-title {
         color: #333;
         font-size: 1.2em;
         margin-bottom: 10px;
     }
-
     .card-text {
         color: #333;
         font-size: 1em;
     }
-
     .card-rating {
         font-weight: bold;
         color: #4CAF50;
         margin-top: 10px;
     }
-
     .card-subtitle {
         color: #666;
         font-size: 1em;
@@ -96,17 +84,14 @@
         text-align: right;
     }
    */
-
     .bborder {
       border: 2px solid transparent;
       border-radius: 35px;
     }
-
     .bborder:hover {
       border: 2px solid black;
       border-radius: 35px;
     }
-
     .container-banner {
         padding-top: 20px;
         padding-bottom: 20px;
@@ -114,7 +99,6 @@
         color: white;
         text-align: center;
     }
-
     .pagination {
         margin-top: -8px; /* Adjust the top margin as needed */
     }
@@ -128,13 +112,11 @@
     var children = Array.from(pages); // Gets the child elements of the pages array
     return children.indexOf(currentPage) + 1; // Returning index of current page.
   }
-
   function getMaxPages() {
     var pages = document.querySelectorAll('#reviewContainer > .row.row-cols-2.rows-cols-md-2.g-4');
     var children = Array.from(pages); // Gets the child elements of the pages array
     return children.length;
   }
-
   function showPage(pageNum) {
     var reviewPages = document.querySelectorAll('.row.row-cols-2.rows-cols-md-2.g-4');
     reviewPages.forEach(page => {
@@ -145,12 +127,9 @@
     if (currentPage) {
       currentPage.style.display = 'flex';
     }
-
-
     var previousButton = document.querySelector('#previousPage');
     var nextButton = document.querySelector('#nextPage');
     var pageButton = document.querySelector(`#page${pageNum}`);
-
     if(pageNum === 1) // Disables previous button if the shown page is the first page, ensures the next button is not disabled.
     {
       previousButton.classList.add('disabled');
@@ -172,9 +151,10 @@
 </script>
 
 <main>
-  <p></p>
+
       <div class="container container-banner">
-        <h1>My Reviews - Explore and manage my book reviews.</h1>
+        <h1>Your Reviews</h1>
+        <p>Explore and manage your book reviews</p>
     </div>
 
     <% if (typeof message !== 'undefined' && message) { %>
@@ -258,7 +238,6 @@
               </div>
             </div>
           </div>
-
           <!-- Modal that opens when a review being edited, this is the same as suman's with slight variation so it will feel the same for the user -->
           <div class="modal fade" id="editReviewModal<%= myreview.review_id %>" tabindex="-1">
             <div class="modal-dialog" role="document">
@@ -290,7 +269,6 @@
                </div>
             </div>
           </div>
-
           <!-- Modal that opens when a review is being deleted, makes sure the user actually wants to delete their review. -->
           <div class="modal fade" id="deleteReviewModal<%= myreview.review_id %>" tabindex="-1">
             <div class="modal-dialog"">
@@ -321,7 +299,6 @@
             </div>
           </div>
           
-
           <% if((index + 1) % cardsPerPage === 0 || index === myreviews.length - 1) { %>
           </div>
           <% if(index !== myreviews.length - 1) { %>
@@ -337,8 +314,6 @@
         <% }); %>
       </div>
       
-
-
       
  <!-- Table Layout for Reviews 
  <table class="table" style="margin-top: 40px;">
@@ -363,7 +338,6 @@
 </table>
 -->
 </div>
-
 <div class="container" style="padding-top: 50px;">
   <nav>
     <ul class="pagination justify-content-center">
@@ -424,7 +398,4 @@
     </div>
   -->
 </main>
-
-
-
 <%- include ('../partials/footer') %>

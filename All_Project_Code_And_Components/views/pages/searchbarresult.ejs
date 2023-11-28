@@ -62,7 +62,6 @@
                         </div>
                     </div>
                 </center>
-
             <% } else { %>
                 <h3 class="card-title"> <center> <%- searchType %> <%- title %> </center> </h3>
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Estimated Amount of Books Available: <%- lowEstimate %> - <%- highEstimate %> </center> </h5>
@@ -70,16 +69,13 @@
             <!-- Last Page Implemenation -->
             <% if ((currentIndex + numOfBooksShown) > lowEstimate) { %> 
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Showing the last bit of results! </center> </h5>
-
             <% } else {  %> 
                 <h5 class="card-subtitle mb-2 text-muted"> <center> Showing Results: <%- currentIndex + 1 %> - <%- currentIndex + numOfBooksShown %> </center> </h5>
             <% } %> 
         </div>
     </center>
-
     <!-- <p> below is for spacing purposes -->
     <p> </p>
-
     <center>
         <!-- Get Search Bar -->
         <div class="card" style="width: 700px; background-color: #BC9E82;">
@@ -96,7 +92,6 @@
                             <input type="text" id="userSearch" placeholder="Search Here!" name="userSearch" required />
                             <button type="submit" style="background-color: #BC9E82; color:black" class="btn btn-dark" value="Search"> Search </button>
                         </div>
-
                         <!-- <p> below is for spacing purposes -->
                         <p> </p>
                         
@@ -105,7 +100,6 @@
                             <label class="btn btn-secondary active">
                             <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
                             </label>
-
                             <label class="btn btn-secondary">
                             <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
                             </label>
@@ -115,14 +109,11 @@
             </div>
         </div>
     </center>
-
     <!-- <p> below is for spacing purposes -->
     <p> </p>
-
     <!-- Cards Displayed -->
     <div class="container">
         <div class="row" > 
-
         <% books.forEach(ABook => {  %>
             <div class="card mb-3" style="width: 1200px; max-height: 650px;">
                 <div class="row no-gutters">
@@ -134,7 +125,6 @@
                             <img src="/img/DefaultBook.png" class="card-img"  style="max-height: 500px;">
                         <% } %>
                     </div>
-
                     <!-- Card Details -->
                     <div class = "col-md-8" style="background-color:#CFB997;">
                         <div class="card text-center" >
@@ -150,7 +140,6 @@
                                     <p class="card-text"> No Author Available </p>
                                 <% } %>
                             </div>
-
                             <div class="card-body" style="background-color:#CFB997;">
                                 <!-- Print out Stars based on rating, if any -->
                                 <% if (ABook.volumeInfo.averageRating) { %> 
@@ -168,7 +157,6 @@
                                 <% } else { %>
                                     <h5 class="card-title"> No Star Review Available </h5>
                                 <% } %>
-
                                 <!--Print out Book Description -->
                                 <% if (ABook.volumeInfo.description) { %>
                                     <p class="card-text" style="font-family: 'Times New Roman'" > <%- ABook.volumeInfo.description %> </p>
@@ -183,14 +171,12 @@
                                 <form action="/searchbarresult" method="POST">
                                     <div>
                                         <input name="book_name" value="<%= ABook.volumeInfo.title %>" hidden> <!-- Add title -->
-
                                         <!-- Add author, if any -->
                                         <% if (ABook.volumeInfo.authors) { %>
                                             <input name="author" value="<%= ABook.volumeInfo.authors[0] %>" hidden>
                                         <% } else { %>
                                             <input name="author" value="No Author" hidden>
                                         <% } %>
-
                                         <!-- Add book URL, if any -->
                                         <% if (ABook.volumeInfo.previewLink) { %>
                                             <input name="book_url" value="<%= ABook.volumeInfo.previewLink %>" hidden>
@@ -201,7 +187,6 @@
                                     </div>
                                     <button type="submit" class="btn btn-secondary" style="float: left"> Add Book To Your Collection! </button>
                                 </form>
-
                                 <!-- Suman's Pop-up Code: -->
                                 <button type="button" class="btn btn-secondary" style="float: right" data-toggle="modal" data-target="#addReviewModal"> Add Review </button>
                                 <!-- Modal -->
@@ -242,7 +227,6 @@
                 </div>
             </div>
         <% }); %> 
-
         <!-- Back and Next button functionality -->
         <center>
             <!-- Back Button -->
@@ -266,10 +250,8 @@
         </center>
         
         </div>
-
         <!-- <p> below is for spacing purposes, for the buttons -->
         <p> </p>
-
     </div>
     <% } %>
 </main>
