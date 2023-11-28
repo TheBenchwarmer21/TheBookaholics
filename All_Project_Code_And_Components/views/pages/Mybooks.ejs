@@ -120,6 +120,13 @@
                                         </div>
                                         <div class="modal-body">
                                             <form method="POST" action="/add_reviews">
+                                                <input name="book_name" value="<%= book.book_name %>" hidden>
+                                                <input name="author" value="<%= book.author %>" hidden>
+                                                <% if (book.book_url) { %>
+                                                    <input name="book_url" value="<%= book.book_url %>" hidden>
+                                                <% } else { %>
+                                                    <input name="book_url" value="Unavailable" hidden>
+                                                <% } %>
                                                 <input type="hidden" name="book_id" value="<%= book.id %>">
                                                 <div class="form-group">
                                                     <label for="review_title">Review Title:</label>

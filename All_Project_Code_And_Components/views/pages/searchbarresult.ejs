@@ -201,6 +201,19 @@
                                             </div>
                                             <div class="modal-body">
                                                 <form method="POST" action="/add_reviews">
+                                                    <input name="book_name" value="<%= ABook.volumeInfo.title %>" hidden> <!-- Add title -->
+                                                    <!-- Add author, if any -->
+                                                    <% if (ABook.volumeInfo.authors) { %>
+                                                        <input name="author" value="<%= ABook.volumeInfo.authors[0] %>" hidden>
+                                                    <% } else { %>
+                                                        <input name="author" value="No Author" hidden>
+                                                    <% } %>
+                                                    <!-- Add book URL, if any -->
+                                                    <% if (ABook.volumeInfo.previewLink) { %>
+                                                        <input name="book_url" value="<%= ABook.volumeInfo.previewLink %>" hidden>
+                                                    <% } else { %>
+                                                        <input name="book_url" value="No URL" hidden>
+                                                    <% } %>
                                                     <div class="form-group">
                                                         <label for="review_title">Review Title:</label>
                                                         <input type="text" class="form-control" id="review_title" name="review_title" required>
