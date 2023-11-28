@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <%- include ('../partials/header') %>
-<main>
-    <div class="container">
-      <div class="login-container" style="max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
-        <h2  style="text-align:center;">The BookAholics</h2>
-        <p style="text-align:justify;">At BookAholics, our mission is to improve your reading experience. Through allowing users to search and review books, we strive to help you find books that you will love.</p>
-        <div class ="d-flex justify-content-evenly">
-            <form action="/register" method="GET">
-                  <a href="/register" class="btn btn-primary " tabindex="-1" role="button" aria-disabled="true">Register</a>
-              </form>
-            <form action = '/login' method="GET">
-                <a href="/login" class="btn btn-primary " tabindex="-1" role="button" aria-disabled="true">Login</a>
-            </form>
-        </div>
-        <b4 class ="d-flex justify-content-center" style="text-align:center;"> Please choose from above</b4>
-
-      </div>
+<main class="d-flex align-items-center justify-content-center" style="height: 80vh;">
+  <div class="login-container text-center p-4" style="max-width: 500px; margin-top: -30px; border: 1px solid #ccc; border-radius: 8px; background-color: rgba(255, 255, 255, 0.8);">
+    <h2 class="mb-4">Welcome to The BookAholics</h2>
+    <p style="text-align: justify;">
+      Welcome to The BookAholics! Our mission is to elevate your reading experience by providing a platform to discover, review, and engage in lively discussions about books within our vibrant community. The Bookaholics is an application that empowers its users to be more than passive readers; it invites them to become active community participants and trusted reviewers. Our application will be designed to be intuitive and is a method in allowing users to establish their literary journeys and meaningful dialogue or insight into the community. With a smart recommendation system, the app caters in helping users find, review, and talk about books from all kinds of genres. Nevertheless, The Bookoholics is an application that brings a positive twist to the book lover’s digital experience on this platform. This fun-filled application is an all-in-one platform that also allows users to discover new reads across diverse genres, share their thoughts through reviews, and engage in lively discussions. 
+    </p>
+    <div class="d-flex justify-content-evenly mt-3">
+      <form action="/register" method="GET">
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+      <form action="/login" method="GET">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
     </div>
-  </main>
+    
+    <p class="mt-3">Choose one of the options above to begin your exciting journey with The BookAholics! 📚✨</p>
+  </div>
+</main>
 <%- include ('../partials/footer') %>
+
+<!-- Background Image to the Entire Page (full screen) -->
+<style>
+    body {
+      background-image: url('/img/nice.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      margin: 0;
+    }
+</style>
