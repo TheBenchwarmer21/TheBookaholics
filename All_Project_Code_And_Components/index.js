@@ -307,13 +307,48 @@ app.get('/Mybooks', (req, res) => {
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
   try {
-    const reviews = await db.any('SELECT * FROM reviews'); 
-    res.render('pages/reviews', { reviews });
+    const reviews = await db.any('SELECT * FROM reviews');
+    let groupedReviews = {};
+
+    // Group reviews by title
+    reviews.forEach(review => {
+      if (!groupedReviews[review.review_title]) {
+        groupedReviews[review.review_title] = { reviews: [], averageRating: 0 };
+      }
+      groupedReviews[review.review_title].reviews.push(review);
+    });
+
+    // Calculate average rating for each title
+    for (let title in groupedReviews) {
+      let totalRating = groupedReviews[title].reviews.reduce((acc, review) => acc + Number(review.rating), 0);
+      let averageRating = totalRating / groupedReviews[title].reviews.length;
+      groupedReviews[title].averageRating = averageRating.toFixed(1); // Keeping one decimal
+      console.log(title, groupedReviews[title].averageRating); // Debugging
+    }
+
+    console.log(groupedReviews); // Debugging
+    res.render('pages/reviews', { groupedReviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.render('pages/error', { message: "Error fetching reviews." });
   }
 });
+
+
+
+function groupReviewsByTitle(reviews) {
+  return reviews.reduce((acc, review) => {
+    // If the title doesn't exist in the accumulator, add it
+    if (!acc[review.review_title]) {
+      acc[review.review_title] = [];
+    }
+    // Add the review to the appropriate title group
+    acc[review.review_title].push(review);
+    return acc;
+  }, {});
+}
+
+
 app.get('/add_reviews', auth, (req, res) => {
   const successMessage = req.query.message;
   res.render('pages/add_reviews', { successMessage });
