@@ -51,14 +51,13 @@
     .book-count {
         text-align: center;
         margin-top: 10px;
-        margin-bottom: 20px; /*bottom margin*/
-        font-weight: bold; /* Add this line to make the text bold */
-    }
-    .search-bar {
-        margin-bottom: 20px;
-        text-align: center; /* Center the search bar */
+        margin-bottom: 20px; 
+        font-weight: bold; 
     }
 </style>
+
+
+
 
 <main>
     <div class="container">
@@ -75,8 +74,8 @@
             <p>Total Books in Collection: <%= Mybooks.length %></p>
         </div>
 
-        <!-- Book collection  -->
-        <table class="table">
+        <!-- Book collection (switched to yellow colored table - follow bootstrap to adjust coloring)  -->
+        <table class="table table-warning"> 
             <thead>
                 <tr>
                     <th>Title</th>
