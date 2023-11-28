@@ -15,6 +15,14 @@
         background-color: #6d7f6e; /* Light green */
     }
 
+    body {
+      background-image: url('/img/nice.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      margin: 0;
+    }
+
     .btn-action:hover {
         background-color: #0bf139; /* Slightly darker green on hover */
     }
@@ -31,6 +39,35 @@
         margin-left: 5px;
         font-size: 14px;
     }
+
+    .banner {
+        background-color: #34495e; /* Dark blue */
+        color: white;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .book-count {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        font-weight: bold; /* Add this line to make the text bold */
+    }
+
+    .search-bar {
+        margin-bottom: 20px;
+        text-align: center; /* Center the search bar */
+    }
 </style>
 
 <main>
@@ -40,42 +77,72 @@
             <h1>My Book Collection</h1>
         </div>
 
-        <!-- Book collection  -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% Mybooks.forEach(book => { %>
-                    <tr>
-                        <td><%= book.book_name %></td>
-                        <td><%= book.author %></td>
-                        <td>
-                            <!-- Read Button -->
-                            <% if (book.book_url) { %>
-                                <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
-                                    Read
-                                    <i class="external-link-icon">&#x2197;</i> <!-- External link icon -->
-                                </button>
-                            <% } else { %>
-                                <span>Not available</span>
-                            <% } %>
+        <!-- Search Form -->
+        <form action="/searchbarresult" method="GET" class="search-bar">
+            <!-- Title Search -->
+            <div class="form-group row">
+                <!-- Search Input -->
+                <div class="ml-auto" style="text-align:center">
+                    <input type="text" id="userSearch" placeholder="Search Book Collection!" name="userSearch" required />
+                    <!-- Search Button -->
+                    <button type="submit" class="btn btn-primary" value="Search"> Search </button>
+                </div>
+                <!-- <p> below is for spacing purposes -->
+                <p> </p>
+                <!-- Search by Author or Title -->
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active">
+                      <input type="radio" name="searchOption" id="titleOption" value="intitle:" checked> Search By Title
+                    </label>
+                    <label class="btn btn-secondary">
+                      <input type="radio" name="searchOption" id="authorOption" value="inauthor:"> Search By Author
+                    </label>
+                </div>
+            </div>
+        </form>
 
-                            <!-- Remove Button -->
-                            <form action="/remove_book" method="post" style="display: inline;">
-                                <input type="hidden" name="bookId" value="<%= book.book_id %>">
-                                <button type="submit" class="btn-action btn-remove">Remove</button>
-                            </form>
+        <!-- Book Count -->
+        <div class="book-count">
+            <p>Total Books in Collection: <%= Mybooks.length %></p>
+        </div>
 
-                            <!-- Add Review Button -->
-                            <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
-                                Add Review
-                            </button>
+       <!-- Book collection  -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% Mybooks.forEach(book => { %>
+            <tr>
+                <td><%= book.book_name %></td>
+                <td><%= book.author %></td>
+                <td>
+                    <!-- Read Button -->
+                    <% if (book.book_url) { %>
+                        <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
+                            Read
+                            <i class="external-link-icon">&#x2197;</i> <!-- External link icon -->
+                        </button>
+                    <% } else { %>
+                        <span>Not available</span>
+                    <% } %>
 
+                    <!-- Remove Button -->
+                    <form action="/remove_book" method="post" style="display: inline;">
+                        <input type="hidden" name="bookId" value="<%= book.book_id %>">
+                        <button type="submit" class="btn-action btn-remove">Remove</button>
+                    </form>
+
+                    <!-- Add Review Button -->
+                    <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
+                        Add Review
+                    </button>
+
+                    
                             <!-- Modal for Adding Review -->
                             <div class="modal fade" id="addReviewModal-<%= book.id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.id %>" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -115,5 +182,4 @@
         </table>
     </div>
 </main>
-
 <%- include ('../partials/footer') %>
