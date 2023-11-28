@@ -72,6 +72,7 @@
 
 <main>
     <div class="container">
+        <p></p>
         <!-- Banner  -->
         <div class="banner">
             <h1>My Book Collection</h1>
@@ -128,7 +129,7 @@
                             <% if (book.book_url) { %>
                                 <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
                                     Read
-                                    <i class="external-link-icon">&#x2197;</i> <!-- External link icon -->
+                                    <i class="external-link-icon">&#x2197;</i>
                                 </button>
                             <% } else { %>
                                 <span>Not available</span>
