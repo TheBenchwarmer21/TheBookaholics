@@ -32,11 +32,14 @@ Used the following tools:
 
 ## Prerequisites To Run The Application 
 
-Docker? 
+- Have Docker compose running before running the application.
 
 ## Instructions On How To Run The Application Locally
 
-Git Pull?
+- Git pull first to update any changes made in the group.
+- Start Docker Desktop application.
+- Run Docker-compose up in the terminal.
+- Access the local host on your prefered web browser. 
 
 ## How To Run The Tests
 
