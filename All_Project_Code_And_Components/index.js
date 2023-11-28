@@ -134,6 +134,7 @@ app.get("/", (req, res) => {
 });
 
 
+// close task for login and register code (task #62 here)
 app.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/home'); // If already logged in, go to home
   res.render('pages/login');
