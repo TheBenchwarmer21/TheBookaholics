@@ -116,7 +116,7 @@ app.post('/delete_user', (req, res) => {
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    return res.redirect('pages/welcome');
+    return res.render('pages/welcome');
   }
   next();
 };
