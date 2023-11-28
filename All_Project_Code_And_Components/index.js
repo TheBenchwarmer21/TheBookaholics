@@ -321,40 +321,63 @@ app.get('/add_reviews', auth, (req, res) => {
 
 // Route to add a new book review
 app.post('/add_reviews', auth, async (req, res) => {
-  try {
-    const { review_title, review, rating } = req.body;
-    const username = req.session.user.username; 
-    const insertQuery = 'INSERT INTO reviews (review_title, username, review, rating) VALUES ($1, $2, $3, $4)';
-    await db.none(insertQuery, [review_title, username, review, rating]);
+  const values = {review_title: req.body.review_title, review: req.body.review, 
+    rating: req.body.rating, username: req.session.user.username, book_name: fixApostrophe(req.body.book_name), 
+    author: req.body.author, book_url: req.body.book_url}; 
 
+    const getBookID = `SELECT * FROM books WHERE book_name = '${values.book_name}' AND author = '${values.author}';`;
+
+    db.any(getBookID)
+
+    .then((data0) => { 
+      let bookID = data0[0].book_id;
+
+      const addReview = `INSERT INTO reviews (review_title, username, review, rating) VALUES 
+      ('${values.review_title}', '${values.username}', '${values.review}', ${values.rating}) RETURNING *;`;
+
+      db.any(addReview) 
+
+      .then((data1) => { 
+        let reviewID = data1[0].review_id; 
+      })
+
+      const connection = `INSERT INTO books_to_reviews (book_id, review_id) VALUES ($1 , $2)`;
+  
+        db.any(connection, [
+          bookID, 
+          reviewID,
+        ])
     
-    res.redirect('/myreviews?message=Review added successfully');
-  } catch (error) {
-    console.error("Error adding review:", error);
-    res.render('pages/add_reviews', { message: "Error adding review. Please try again." });
-  }
-});
+        res.redirect('/myreviews?message=Review added successfully');
 
-app.post('/edit_review', auth, async (req, res) => {
-  try {
-    const editQuery = 'UPDATE reviews SET review_title = $1, review = $2, rating = $3 WHERE review_id = $4;';
-    db.none(editQuery, [req.body.review_title, req.body.review, req.body.rating, req.body.review_id]);
-    res.redirect(`/myreviews?page_num=${req.body.page_num}`);
-  } catch (error) {
-    console.log("Error editing review. Please try again.");
-    res.redirect('/myreviews');
-  }
-});
+    })
+    .catch((err) => { 
+      const addReview = `INSERT INTO reviews (review_title, username, review, rating) VALUES 
+      ('${values.review_title}', '${values.username}', '${values.review}', ${values.rating}) RETURNING *;`;
+      const addBook = `INSERT INTO books (book_url, book_name, author) VALUES ('${values.book_url}', '${values.book_name}', '${values.author}') RETURNING *;`;
 
-app.post('/delete_review', auth, async (req, res) => {
-  try {
-    const deleteQuery = 'DELETE FROM books_to_reviews WHERE review_id = $1; DELETE FROM reviews WHERE review_id = $1;';
-    db.none(deleteQuery, [req.body.review_id]);
-    res.redirect('/myreviews');
-  } catch (error) {
-    console.log(error)
-    res.redirect('/myreviews');
-  }
+      db.task('get-everything', task => { 
+        return task.batch([ 
+          task.any(addReview), 
+          task.any(addBook),
+        ]);
+      })
+
+      .then((data) => { 
+        let reviewID = data[0][0].review_id; 
+        let bookID = data[1][0].book_id;
+
+        const connection = `INSERT INTO books_to_reviews (book_id, review_id) VALUES ($1 , $2)`;
+  
+        db.any(connection, [
+          bookID, 
+          reviewID,
+        ])
+    
+        res.redirect('/myreviews?message=Review added successfully');
+
+      })
+    });
 });
 
 
@@ -576,6 +599,7 @@ app.post('/searchbarresult', async (req, res) => {
       WHERE book_name = '${values.book_name}' AND 
       author = '${values.author}'
       )
+
     SELECT *
     FROM books_to_users 
     INNER JOIN TEMP 
