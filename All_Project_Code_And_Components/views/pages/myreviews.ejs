@@ -3,8 +3,11 @@
 
 <style>
     body {
-        
+        background-image: url('/img/nice.jpg');
         background-size: cover;
+        background-position: center;
+        height: 100vh;
+        margin: 0;
     }
     /* 
     .reviews-container {
@@ -103,6 +106,18 @@
       border: 2px solid black;
       border-radius: 35px;
     }
+
+    .container-banner {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background-color: #34495e; /* Dark blue */
+        color: white;
+        text-align: center;
+    }
+
+    .pagination {
+        margin-top: -10px; /* Adjust the top margin as needed */
+    }
     
 </style>
 
@@ -157,9 +172,20 @@
 </script>
 
 <main>
+
+      <div class="container container-banner">
+        <h1>Your Reviews</h1>
+        <p>Explore and manage your book reviews</p>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
+            <%= message %>
+        </div>
+    <% } %>
   
     <div class="container" id="reviewContainer" style="height: 774px;">
-        <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> Your Reviews</h1>
+        <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> </h1>
         <% if (typeof message !== 'undefined' && message) { %>
           <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
             <%= message %>
