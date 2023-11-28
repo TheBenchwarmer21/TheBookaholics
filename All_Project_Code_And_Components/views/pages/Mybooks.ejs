@@ -61,12 +61,12 @@
         text-align: center;
         margin-top: 10px;
         margin-bottom: 20px;
-        font-weight: bold; /* Add this line to make the text bold */
+        font-weight: bold; 
     }
 
     .search-bar {
         margin-bottom: 20px;
-        text-align: center; /* Center the search bar */
+        text-align: center; 
     }
 </style>
 
@@ -80,18 +80,17 @@
 
         <!-- Search Form -->
         <form action="/searchbarresult" method="GET" class="search-bar">
-            <!-- Title Search -->
             <div class="form-group row">
-                <!-- Search Input -->
+                <!-- Search Input from the user -->
                 <div class="col-8" style="text-align:center">
                     <input type="text" id="userSearch" placeholder="Search Book Collection!" name="userSearch" required class="form-control" />
                 </div>
                 
-                <!-- Search Button -->
+                <!-- Search Button here -->
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary" value="Search"> Search </button>
                 </div>
-                <!-- Search by Author or Title -->
+                <!-- we want to search by author or title  -->
                 <div class="col-auto">
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-secondary active">
