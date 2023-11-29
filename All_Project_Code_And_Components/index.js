@@ -283,6 +283,55 @@ app.get('/myreviews', auth, (req, res) => {
 });
 
 
+app.get('/otherreviews/:review_id', auth, (req, res) => {
+  console.log('Rendering otherreviews page');
+
+  if (req.session.user === undefined) {
+    res.render('pages/otherreviewsd', {
+      otherreviews: [],
+      page: 1
+    });
+
+  } else {
+    const review_id = req.params.review_id;
+    console.log(review_id);
+    const reviewQuery = `SELECT r.* FROM reviews r JOIN books_to_reviews btr ON r.review_id = btr.review_id WHERE btr.book_id = (SELECT book_id FROM books_to_reviews WHERE review_id ='${review_id}');`;
+
+    if (req.query.page_num === undefined) {
+      db.any(reviewQuery, [req.session.user.username])
+        .then((otherreviews) => {
+          res.render('pages/otherreviews', {
+            otherreviews,
+            page: 1
+          });
+        })
+        .catch((err) => {
+          res.render('pages/otherreviews', {
+            otherreviews: [],
+            page: 1,
+            error: true
+          });
+        });
+    } else {
+      db.any(reviewQuery, [req.session.user.username])
+        .then((myreviews) => {
+          res.render('pages/otherreviews', {
+            otherreviews,
+            page: req.query.page_num
+          });
+        })
+        .catch((err) => {
+          res.render('pages/otherreviews', {
+            otherreviews: [],
+            page: req.query.page_num,
+            error: true
+          });
+        });
+    }
+  }
+});
+
+
 app.get('/Mybooks', (req, res) => {
   if (req.session.user === undefined) {
     res.render('pages/Mybooks', { Mybooks: [] });
