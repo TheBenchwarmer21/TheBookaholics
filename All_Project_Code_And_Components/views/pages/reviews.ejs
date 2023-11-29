@@ -1,7 +1,4 @@
 <%- include ('../partials/header') %>
-<head>
-    <title> All Reviews </title>
-  </head>
 
 <!DOCTYPE html>
 <html>
@@ -15,113 +12,203 @@
         background-position: center;
         height: 100vh;
         margin: 0;
+        padding-bottom: 700px; 
+        
     }
+
         .reviews-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             padding: 20px;
         }
+
         .review-card {
             background-color: rgb(229, 221, 221);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 8px;
             overflow: hidden;
         }
+
         .card-body {
             padding: 15px;
         }
+
         .card-title {
             color: #333;
             font-size: 1.2em;
             margin-bottom: 10px;
         }
+        .average-rating {
+        color: #4CAF50; 
+    }
+
         .card-text {
             color: #333;
             font-size: 1em;
         }
+
         .card-rating {
             font-weight: bold;
             color: #4CAF50;
             margin-top: 10px;
         }
+
         .card-subtitle {
             color: #666;
             font-size: 1em;
             margin-top: 15px;
             text-align: right;
         }
+
         .banner {
-        background-color: #34495e; /* Dark blue */
-        color: white;
-        padding: 20px;
-        text-align: center;
-        margin-bottom: 20px;
-    }
+            background-color: #34495e;
+            color: #fff;
+            padding: 30px 20px; 
+             text-align: center;
+            margin-bottom: 40px; 
+            border-radius: 10px; 
+             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+            font-family: 'Arial', sans-serif; 
+            font-size: 2em; 
+}
+
+    .book-review-container {
+    margin-bottom: 20px;
+}
+.footer {
+  height: 50px; 
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  
+}
+
+
+.book-header {
+    background-color: #f0f0f0; 
+    border-radius: 10px; 
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.book-title {
+    margin: 0;
+    color: #333;
+}
+
+.book-average-rating {
+    margin: 0;
+    color: #4CAF50; /* Green color for rating */
+    font-weight: bold;
+}
+
+.review-list {
+    background-color: #fff; /* White background for reviews */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: none; /* Initially hidden */
+}
+.initial-reviews, .additional-reviews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between review cards */
+}
+
+.review-card {
+    flex: 1;
+    min-width: 300px; 
+    
+}
+
+/* Style for the expand/collapse button */
+.expand-btn {
+    margin: 10px 0;
+    padding: 5px 10px;
+    background-color: #a4a3c0; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
     </style>
 </head>
 <body>
 
     <div class="container mt-4">
-        <!-- Banner  -->
+        <!-- Banner -->
         <div class="banner">
             <h1>Book Reviews</h1>
         </div>
 
-        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addReviewModal">
-            Add Review
-        </button>
-        <div class="reviews-container">
-            <% if(reviews.length > 0) { %>
-                <% reviews.forEach(function(review) { %>
-                    <div class="review-card">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= review.review_title %></h5>
-                            <p class="card-text"><strong>Review:</strong> <%= review.review %></p>
-                            <div class="card-rating"><strong>Rating:</strong> <%= review.rating %></div>
-                            <h6 class="card-subtitle">Reviewed by: <%= review.username %></h6>
-                            <form method="GET" action="/otherreviews/<%= review.review_id %>" style="text-align: right;">
-                                <button type="submit" class="btn btn-secondary btn-sm mt-1">Read other reviews for this book</button>
-                            </form>
-                        </div>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <p>No reviews found.</p>
-            <% } %>
-        </div>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Add a New Book Review</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+
+        <!-- Reviews Container for Grouped Reviews -->
+        <% for(let bookName in groupedReviews) { %>
+            <div class="book-review-container">
+                <div class="book-header">
+                    <h3 class="book-title"><%= bookName %></h3>
+                    <p class="book-average-rating">Average Rating: <span><%= groupedReviews[bookName].averageRating %></span></p>
                 </div>
-                <div class="modal-body">
-                    <form method="POST" action="/add_reviews">
-                        <div class="form-group">
-                            <label for="review_title">Review Title:</label>
-                            <input type="text" class="form-control" id="review_title" name="review_title" required>
+        
+                <!-- Display first three reviews -->
+                <div class="initial-reviews">
+                    <% groupedReviews[bookName].reviews.slice(0, 3).forEach(function(review) { %>
+                        <div class="review-card">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= review.review_title %></h5>
+                                <p class="card-text"><strong>Review:</strong> <%= review.review %></p>
+                                <div class="card-rating"><strong>Rating:</strong> <%= review.rating %></div>
+                                <h6 class="card-subtitle">Reviewed by: <%= review.username %></h6>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="review">Review:</label>
-                            <textarea class="form-control" id="review" name="review" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="rating">Rating:</label>
-                            <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                    </form>
+                    <% }); %>
                 </div>
+        
+                <!-- Hidden container for additional reviews -->
+                <% if(groupedReviews[bookName].reviews.length > 3) { %>
+                    <button class="expand-btn">More Reviews</button>
+                    <div class="additional-reviews" style="display: none;">
+                        <% groupedReviews[bookName].reviews.slice(3).forEach(function(review) { %>
+                            <div class="review-card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= review.review_title %></h5>
+                                    <p class="card-text"><strong>Review:</strong> <%= review.review %></p>
+                                    <div class="card-rating"><strong>Rating:</strong> <%= review.rating %></div>
+                                    <h6 class="card-subtitle">Reviewed by: <%= review.username %></h6>
+                                </div>
+                            </div>
+                            
+                        <% }); %>
+                    </div>
+                <% } %>
             </div>
-        </div>
-    </div>
+        <% } %>
+        
+          <script>
+            document.querySelectorAll('.expand-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const additionalReviews = this.nextElementSibling;
+                    additionalReviews.style.display = additionalReviews.style.display === 'none' ? 'block' : 'none';
+                    this.textContent = additionalReviews.style.display === 'none' ? 'More Reviews' : 'Less Reviews';
+                });
+            });
+        </script>
+        
+        
+
+ </div>
+
+
+    
 </body>
 </html>
 

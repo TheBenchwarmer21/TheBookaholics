@@ -362,13 +362,54 @@ app.get('/Mybooks', (req, res) => {
 // Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
   try {
-    const reviews = await db.any('SELECT * FROM reviews'); 
-    res.render('pages/reviews', { reviews });
+    const reviews = await db.any(`
+    SELECT reviews.*, books.book_name 
+  FROM reviews 
+  JOIN books_to_reviews ON reviews.review_id = books_to_reviews.review_id
+  JOIN books ON books_to_reviews.book_id = books.book_id;
+`);
+
+    let groupedReviews = {};
+
+    reviews.forEach(review => {
+      if (!groupedReviews[review.book_name]) {
+        groupedReviews[review.book_name] = { reviews: [], averageRating: 0 };
+      }
+      groupedReviews[review.book_name].reviews.push(review);
+    });
+    
+    
+
+    // Calculate average rating for each title
+    for (let bookName in groupedReviews) {
+      let totalRating = groupedReviews[bookName].reviews.reduce((acc, review) => acc + Number(review.rating), 0);
+      let averageRating = totalRating / groupedReviews[bookName].reviews.length;
+      groupedReviews[bookName].averageRating = averageRating.toFixed(1); // Keeping one decimal
+    }
+    
+
+    console.log(groupedReviews); // Debugging
+    res.render('pages/reviews', { groupedReviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.render('pages/error', { message: "Error fetching reviews." });
   }
 });
+
+
+
+function groupReviewsByTitle(reviews) {
+  return reviews.reduce((acc, review) => {
+    // If the title doesn't exist in the accumulator, add it
+    if (!acc[review.review_title]) {
+      acc[review.review_title] = [];
+    }
+    // Add the review to the appropriate title group
+    acc[review.review_title].push(review);
+    return acc;
+  }, {});
+}
+
 app.get('/add_reviews', auth, (req, res) => {
   const successMessage = req.query.message;
   res.render('pages/add_reviews', { successMessage });
@@ -376,9 +417,15 @@ app.get('/add_reviews', auth, (req, res) => {
 
 // Route to add a new book review
 app.post('/add_reviews', auth, async (req, res) => {
-  const values = {review_title: req.body.review_title, review: req.body.review, 
-    rating: req.body.rating, username: req.session.user.username, book_name: fixApostrophe(req.body.book_name), 
-    author: req.body.author, book_url: req.body.book_url}; 
+  const values = {
+    review_title: fixApostrophe(req.body.review_title),
+    review: fixApostrophe(req.body.review),
+    rating: req.body.rating,
+    username: fixApostrophe(req.session.user.username),
+    book_name: fixApostrophe(req.body.book_name),
+    author: fixApostrophe(req.body.author),
+    book_url: req.body.book_url
+  };
 
     const getBookID = `SELECT * FROM books WHERE book_name = '${values.book_name}' AND author = '${values.author}';`;
 
