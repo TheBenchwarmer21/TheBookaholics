@@ -77,6 +77,9 @@
                             <p class="card-text"><strong>Review:</strong> <%= review.review %></p>
                             <div class="card-rating"><strong>Rating:</strong> <%= review.rating %></div>
                             <h6 class="card-subtitle">Reviewed by: <%= review.username %></h6>
+                            <form method="GET" action="/otherreviews/<%= review.review_id %>" style="text-align: right;">
+                                <button type="submit" class="btn btn-secondary btn-sm mt-1">Read other reviews for this book</button>
+                            </form>
                         </div>
                     </div>
                 <% }); %>
