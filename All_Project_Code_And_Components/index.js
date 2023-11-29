@@ -359,6 +359,14 @@ app.get('/Mybooks', (req, res) => {
   }
 });
 app.get('/reviews', auth, async (req, res) => {
+  // Message turns red if there is a book already in collection / Passes error
+  if (req.query.error) { 
+    errorMessage = true;
+  }
+  else {
+    errorMessage = false;
+  }
+
   try {
     const reviews = await db.any(`
       SELECT reviews.*, books.book_name, books.author, books.book_url 
@@ -388,8 +396,7 @@ app.get('/reviews', auth, async (req, res) => {
       groupedReviews[bookName].averageRating = averageRating.toFixed(1); // Keeping one decimal
     }
 
-    console.log(groupedReviews); // Debugging
-    res.render('pages/reviews', { groupedReviews });
+    res.render('pages/reviews', { message: req.query.message, error: errorMessage, groupedReviews });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.render('pages/error', { message: "Error fetching reviews." });
@@ -492,27 +499,27 @@ app.post('/add-to-collection', auth, async (req, res) => {
 
   try {
       // Check if the book already exists in the database
-      let book = await db.oneOrNone('SELECT book_id FROM books WHERE book_name = $1 AND author = $2', [book_name, author]);
+      let book = await db.oneOrNone(`SELECT book_id FROM books WHERE book_name = $1 AND author = $2`, [book_name, author]);
 
       if (!book) {
           // Add the book to the database if it doesn't exist
-          book = await db.one('INSERT INTO books (book_name, author, book_url) VALUES ($1, $2, $3) RETURNING book_id', [book_name, author, book_url]);
+          book = await db.one(`INSERT INTO books (book_name, author, book_url) VALUES ($1, $2, $3) RETURNING book_id`, [book_name, author, book_url]);
       }
 
       // Check if the user already has this book in their collection
-      const userBook = await db.oneOrNone('SELECT * FROM user_books WHERE user_id = $1 AND book_id = $2', [userID, book.book_id]);
+      const userBook = await db.oneOrNone(`SELECT * FROM books_to_users WHERE user_id = $1 AND book_id = $2`, [userID, book.book_id]);
 
       if (!userBook) {
           // Add the book to the user's collection
-          await db.none('INSERT INTO user_books (user_id, book_id) VALUES ($1, $2)', [userID, book.book_id]);
-          res.redirect('/reviews?message=Book added to collection');
+          await db.none(`INSERT INTO books_to_users (user_id, book_id) VALUES ($1, $2)`, [userID, book.book_id]);
+          res.redirect("/reviews?message=" + book_name + " added to collection");
       } else {
           // Handle the case where the book is already in the user's collection
-          res.redirect('/reviews?message=Book already in collection');
+          res.redirect("/reviews?error='true'&message=" + book_name + " already in collection");
       }
   } catch (error) {
       console.error('Error adding book to collection:', error);
-      res.redirect('/reviews?error=Error adding book to collection');
+      res.redirect("/reviews?error='true'&message=" + book_name + " already in collection");
   }
 });
 
