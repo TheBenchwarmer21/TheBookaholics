@@ -1,9 +1,4 @@
 <%- include ('../partials/header') %>
-<div class="col"><%- include ('../partials/message') %></div>
-
-<head>
-    <title> My Books </title>
-  </head>
 
 <style>
     .btn-action {
@@ -43,16 +38,8 @@
         background-color: #34495e; /* Dark blue */
         color: white;
         padding: 20px;
-        border-radius: 10px;
         text-align: center;
         margin-bottom: 20px;
-    }
-    .search-bar {
-        margin-bottom: 20px;
-    }
-    .pagination-buttons {
-        display: flex;
-        justify-content: space-between;
     }
     .book-count {
         text-align: center;
@@ -60,19 +47,20 @@
         margin-bottom: 20px; 
         font-weight: bold; 
     }
-    .custom-table-color {
-        background-color: rgb(229, 221, 221);
-}
-
+    .card {
+        margin-bottom: 20px;
+        background-color: #f8f9fa; 
+    }
+    .card-header {
+        background-color: #6d7f6e; 
+        color: white;
+    }
 </style>
-
-
 
 
 <main>
     <div class="container">
-        <p></p>
-        <!-- Banner  -->
+        <!-- Banner -->
         <div class="banner">
             <h1>My Book Collection</h1>
         </div>
@@ -81,87 +69,90 @@
 
         <!-- Book Count -->
         <div class="book-count">
-            <p>Total Books in Collection: <%= Mybooks.length %></p>
+            <p>Total Books in Collection: <%= Mybooks ? Mybooks.length : 0 %></p>
         </div>
 
         <!-- Book collection (switched to yellow colored table - follow bootstrap to adjust coloring)  -->
-        <table class="table custom-table-color"> 
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="row">
+            <% if(Mybooks) { %>
                 <% Mybooks.forEach(book => { %>
-                    <tr>
-                        <td><%= book.book_name %></td>
-                        <td><%= book.author %></td>
-                        <td>
-                            <!-- Read Button -->
-                            <% if (book.book_url) { %>
-                                <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
-                                    Read
-                                    <i class="external-link-icon">&#x2197;</i> <!-- External link icon -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Title: <%= book.book_name %>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-title">Author: <%= book.author %></p>
+                                
+                                <!-- Read Button -->
+                                <% if (book.book_url) { %>
+                                    <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
+                                        Read
+                                        <i class="external-link-icon">&#x2197;</i>
+                                    </button>
+                                <% } else { %>
+                                    <span>Not available</span>
+                                <% } %>
+
+                                <!-- Remove Button -->
+                                <form action="/remove_book" method="post" style="display: inline;">
+                                    <input name="book_name" value="<%= book.book_name %>" hidden>
+                                    <input type="hidden" name="bookId" value="<%= book.book_id %>">
+                                    <button type="submit" class="btn-action btn-remove">Remove</button>
+                                </form>
+
+                                <!-- Add Review Button -->
+                                <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.book_id %>">
+                                    Add Review
                                 </button>
-                            <% } else { %>
-                                <span>Not available</span>
-                            <% } %>
-                            <!-- Remove Button -->
-                            <form action="/remove_book" method="post" style="display: inline;">
-                                <input name="book_name" value="<%= book.book_name %>" hidden>
-                                <input type="hidden" name="bookId" value="<%= book.book_id %>">
-                                <button type="submit" class="btn-action btn-remove">Remove</button>
-                            </form>
-                            <!-- Add Review Button -->
-                            <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.book_id %>">
-                                Add Review
-                            </button>
-                            <!-- Modal for Adding Review -->
-                            <div class="modal fade" id="addReviewModal-<%= book.book_id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.book_id %>" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modalLabel-<%= book.book_id %>">Add a New Review for <%= book.book_name %></h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="POST" action="/add_reviews">
-                                                <input name="book_name" value="<%= book.book_name %>" hidden>
-                                                <input name="author" value="<%= book.author %>" hidden>
-                                                <% if (book.book_url) { %>
-                                                    <input name="book_url" value="<%= book.book_url %>" hidden>
-                                                <% } else { %>
-                                                    <input name="book_url" value="Unavailable" hidden>
-                                                <% } %>
-                                                <input type="hidden" name="book_id" value="<%= book.id %>">
-                                                <div class="form-group">
-                                                    <label for="review_title">Review Title:</label>
-                                                    <input type="text" class="form-control" id="review_title" name="review_title" required>
-                                                </div>
-                                                
-                                                <div class="form-group">
-                                                    <label for="review">Review:</label>
-                                                    <textarea class="form-control" id="review" name="review" required></textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="rating">Rating:</label>
-                                                    <input type="number" class="form-control" id="rating" name="rating" min="1" max="10" required>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Submit Review</button>
-                                            </form>
+
+                                <!-- Modal for Adding Review -->
+                                <div class="modal fade" id="addReviewModal-<%= book.book_id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.book_id %>" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalLabel-<%= book.book_id %>">Add a New Review for <%= book.book_name %></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="/add_reviews">
+                                                    <input name="book_name" value="<%= book.book_name %>" hidden>
+                                                    <input name="author" value="<%= book.author %>" hidden>
+                                                    <% if (book.book_url) { %>
+                                                        <input name="book_url" value="<%= book.book_url %>" hidden>
+                                                    <% } else { %>
+                                                        <input name="book_url" value="Unavailable" hidden>
+                                                    <% } %>
+                                                    <input type="hidden" name="book_id" value="<%= book.id %>">
+                                                    <div class="form-group">
+                                                        <label for="review_title">Review Title:</label>
+                                                        <input type="text" class="form-control" id="review_title" name="review_title" required>
+                                                    </div>
+                                                    
+                                                    <div class="form-group">
+                                                        <label for="review">Review:</label>
+                                                        <textarea class="form-control" id="review" name="review" required></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="rating">Rating:</label>
+                                                        <input type="number" class="form-control" id="rating" name="rating" min="1" max="10" required>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 <% }); %>
-            </tbody>
-        </table>
+            <% } else { %>
+                <p>No books in the collection.</p>
+            <% } %>
+        </div>
     </div>
 </main>
 
