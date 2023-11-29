@@ -11,6 +11,7 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 const { use } = require('chai');
+const { error } = require('console');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -116,7 +117,10 @@ app.post('/delete_user', (req, res) => {
 // yusef's new login code (closes #48)
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    return res.render('pages/welcome');
+    return res.render('pages/welcome', { 
+      error: true,
+      message: "Session Timed Out"
+    });
   }
   next();
 };
@@ -152,7 +156,7 @@ app.post('/login', async (req, res) => {
       });
     } else {
       res.status(401);
-      res.render('pages/login', { message: "Incorrect username or password." }); // Render login with a message
+      res.render('pages/login', { error: true, message: "Incorrect username or password." }); // Render login with a message
     }
   } catch (error) {
     console.error("Login Error:", error);
@@ -252,7 +256,8 @@ app.get('/myreviews', auth, (req, res) => {
       .then((myreviews) => {
         res.render('pages/myreviews', {
           myreviews,
-          page: 1
+          page: 1,
+          message: req.query.message,
         });
       })
       .catch((err) => {
@@ -267,7 +272,8 @@ app.get('/myreviews', auth, (req, res) => {
       .then((myreviews) => {
         res.render('pages/myreviews', {
           myreviews,
-          page: req.query.page_num
+          page: req.query.page_num,
+          message: req.query.message,
         });
       })
       .catch((err) => {
@@ -344,7 +350,7 @@ app.get('/Mybooks', (req, res) => {
 
     db.any(bookQuery, [userId])
       .then((Mybooks) => {
-        res.render('pages/Mybooks', { Mybooks: Mybooks });
+        res.render('pages/Mybooks', { message: req.query.message ,Mybooks: Mybooks });
       })
       .catch((err) => {
         console.error('Error fetching books:', err);
@@ -434,8 +440,10 @@ app.post('/add_reviews', auth, async (req, res) => {
 app.post('/edit_review', auth, async (req, res) => {
   try {
     const editQuery = 'UPDATE reviews SET review_title = $1, review = $2, rating = $3 WHERE review_id = $4;';
+    // Not sure what the below variable exactly does, so rename variable if you wish - Oscar
+    const pageNum = req.body.page_num;
     db.none(editQuery, [req.body.review_title, req.body.review, req.body.rating, req.body.review_id]);
-    res.redirect(`/myreviews?page_num=${req.body.page_num}`);
+    res.redirect('/myreviews?message=Review Edited Successfully&page_num=' + pageNum);
   } catch (error) {
     console.log("Error editing review. Please try again.");
     res.redirect('/myreviews');
@@ -446,7 +454,7 @@ app.post('/delete_review', auth, async (req, res) => {
   try {
     const deleteQuery = 'DELETE FROM books_to_reviews WHERE review_id = $1; DELETE FROM reviews WHERE review_id = $1;';
     db.none(deleteQuery, [req.body.review_id]);
-    res.redirect('/myreviews');
+    res.redirect("/myreviews?message=Review Deleted Successfully");
   } catch (error) {
     console.log(error)
     res.redirect('/myreviews');
@@ -455,7 +463,7 @@ app.post('/delete_review', auth, async (req, res) => {
 
 // my book colection, remove book routing
 app.post('/remove_book', (req, res) => {
-  console.log(req.body); 
+  const bookTitle = req.body.book_name;
   const book_id = req.body.bookId;
   const user_id = req.session.user.user_id;
   if (!book_id || isNaN(book_id)) {
@@ -464,7 +472,7 @@ app.post('/remove_book', (req, res) => {
   const deleteQuery = 'DELETE FROM books_to_users WHERE book_id = $1 AND user_id = $2';
   db.none(deleteQuery, [book_id, user_id])
     .then(() => {
-      res.redirect('/Mybooks');
+      res.redirect('/Mybooks?message=' + bookTitle + ' has been removed!');
     })
     .catch(err => {
       console.error('Error removing book:', err);
@@ -488,6 +496,7 @@ let userSearch = "";
 let searchOption = ""; 
 let title = ""; 
 let message = ""; 
+let errorMessage = false; 
 
   // The "totalItems" from Google Books API is an inaccurate piece of garbage that also
   // increments value every time the page renders, to combat this, I return the smallest value of totalItems 
@@ -540,6 +549,7 @@ function resetGlobalVariables() {
   searchOption = ""; 
   title = ""; 
   message = ""; 
+  errorMessage = false; 
 }
 
 // Some titles or author's have an apostrophe, which throws off SQL apostrophe. 
@@ -565,6 +575,14 @@ app.get("/searchbarresult", auth, (req,res) => {
   // Immediately check if variables need to be reset
   if (req.query.resetVariables) { 
     resetGlobalVariables();  
+  }
+
+  // Activate message if user is trying to add duplicate book to books database
+  if (req.query.error) { 
+    errorMessage = true;
+  }
+  else {
+    errorMessage = false;
   }
 
   if (req.query.message) { 
@@ -642,6 +660,7 @@ app.get("/searchbarresult", auth, (req,res) => {
         numOfBooksShown: numOfBooksShown,
         message: message,
         searchType: searchType,
+        error: errorMessage,
       }); 
     })
     .catch(err => {
@@ -688,7 +707,7 @@ app.post('/searchbarresult', async (req, res) => {
     else 
     { 
       // Tell user that book is already in their collection. 
-      res.redirect("/searchbarresult?message=" + book_title + " is already in your collection!");
+      res.redirect("/searchbarresult?error='true'&message=" + book_title + " is already in your collection!");
     }
     
   // Below 'catch' body is what to do if user doesn't have book in collection and makes sure

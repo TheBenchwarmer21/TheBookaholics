@@ -1,5 +1,9 @@
 <%- include ('../partials/header') %>
+<div class="col"><%- include ('../partials/message') %></div>
 
+<head>
+  <title> My Reviews </title>
+</head>
 
 <style>
     body {
@@ -157,19 +161,21 @@
         <p>Explore and manage your book reviews</p>
     </div>
 
-    <% if (typeof message !== 'undefined' && message) { %>
+  <!--  <% if (typeof message !== 'undefined' && message) { %>
         <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
             <%= message %>
         </div>
     <% } %>
+  -->
   
     <div class="container" id="reviewContainer" style="height: 774px;">
         <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> </h1>
-        <% if (typeof message !== 'undefined' && message) { %>
+  <!--      <% if (typeof message !== 'undefined' && message) { %>
           <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
             <%= message %>
           </div>
         <% } %>
+  -->
         <% if(page == 1) { %>
           <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: flex">
           <% } else { %>
