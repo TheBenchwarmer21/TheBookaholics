@@ -104,15 +104,15 @@
                                 <button type="submit" class="btn-action btn-remove">Remove</button>
                             </form>
                             <!-- Add Review Button -->
-                            <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.id %>">
+                            <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.book_id %>">
                                 Add Review
                             </button>
                             <!-- Modal for Adding Review -->
-                            <div class="modal fade" id="addReviewModal-<%= book.id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.id %>" aria-hidden="true">
+                            <div class="modal fade" id="addReviewModal-<%= book.book_id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.book_id %>" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalLabel-<%= book.id %>">Add a New Review for <%= book.title %></h5>
+                                            <h5 class="modal-title" id="modalLabel-<%= book.book_id %>">Add a New Review for <%= book.book_name %></h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
