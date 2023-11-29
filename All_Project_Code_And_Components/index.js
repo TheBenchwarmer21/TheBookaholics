@@ -358,27 +358,28 @@ app.get('/Mybooks', (req, res) => {
       });
   }
 });
-  
-// Route to display book reviews
 app.get('/reviews', auth, async (req, res) => {
   try {
     const reviews = await db.any(`
-    SELECT reviews.*, books.book_name 
-  FROM reviews 
-  JOIN books_to_reviews ON reviews.review_id = books_to_reviews.review_id
-  JOIN books ON books_to_reviews.book_id = books.book_id;
-`);
+      SELECT reviews.*, books.book_name, books.author, books.book_url 
+      FROM reviews 
+      JOIN books_to_reviews ON reviews.review_id = books_to_reviews.review_id
+      JOIN books ON books_to_reviews.book_id = books.book_id;
+    `);
 
     let groupedReviews = {};
 
     reviews.forEach(review => {
       if (!groupedReviews[review.book_name]) {
-        groupedReviews[review.book_name] = { reviews: [], averageRating: 0 };
+        groupedReviews[review.book_name] = {
+          reviews: [],
+          averageRating: 0,
+          author: review.author, // Correctly set here
+          book_url: review.book_url // Correctly set here
+        };
       }
       groupedReviews[review.book_name].reviews.push(review);
     });
-    
-    
 
     // Calculate average rating for each title
     for (let bookName in groupedReviews) {
@@ -386,7 +387,6 @@ app.get('/reviews', auth, async (req, res) => {
       let averageRating = totalRating / groupedReviews[bookName].reviews.length;
       groupedReviews[bookName].averageRating = averageRating.toFixed(1); // Keeping one decimal
     }
-    
 
     console.log(groupedReviews); // Debugging
     res.render('pages/reviews', { groupedReviews });
@@ -395,6 +395,8 @@ app.get('/reviews', auth, async (req, res) => {
     res.render('pages/error', { message: "Error fetching reviews." });
   }
 });
+
+
 
 
 
@@ -483,6 +485,37 @@ app.post('/add_reviews', auth, async (req, res) => {
       })
     });
 });
+
+app.post('/add-to-collection', auth, async (req, res) => {
+  const { book_name, author, book_url } = req.body;
+  const userID = req.session.user.user_id; // Assuming the user's ID is stored in the session
+
+  try {
+      // Check if the book already exists in the database
+      let book = await db.oneOrNone('SELECT book_id FROM books WHERE book_name = $1 AND author = $2', [book_name, author]);
+
+      if (!book) {
+          // Add the book to the database if it doesn't exist
+          book = await db.one('INSERT INTO books (book_name, author, book_url) VALUES ($1, $2, $3) RETURNING book_id', [book_name, author, book_url]);
+      }
+
+      // Check if the user already has this book in their collection
+      const userBook = await db.oneOrNone('SELECT * FROM user_books WHERE user_id = $1 AND book_id = $2', [userID, book.book_id]);
+
+      if (!userBook) {
+          // Add the book to the user's collection
+          await db.none('INSERT INTO user_books (user_id, book_id) VALUES ($1, $2)', [userID, book.book_id]);
+          res.redirect('/reviews?message=Book added to collection');
+      } else {
+          // Handle the case where the book is already in the user's collection
+          res.redirect('/reviews?message=Book already in collection');
+      }
+  } catch (error) {
+      console.error('Error adding book to collection:', error);
+      res.redirect('/reviews?error=Error adding book to collection');
+  }
+});
+
 
 app.post('/edit_review', auth, async (req, res) => {
   try {

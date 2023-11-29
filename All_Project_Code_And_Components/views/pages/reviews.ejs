@@ -124,6 +124,22 @@
     min-width: 300px; 
     
 }
+.book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.book-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.action-form {
+    margin: 0; /* Removes any default margin */
+}
+
 
 /* Style for the expand/collapse button */
 .expand-btn {
@@ -155,8 +171,30 @@
             <div class="book-review-container">
                 <div class="book-header">
                     <h3 class="book-title"><%= bookName %></h3>
-                    <p class="book-average-rating">Average Rating: <span><%= groupedReviews[bookName].averageRating %></span></p>
+                    <div class="book-header-actions">
+                        <!-- Add to Collection Form -->
+                        <form action="/add-to-collection" method="post" class="action-form">
+                            <input type="hidden" name="book_name" value="<%= bookName %>">
+                            <input type="hidden" name="author" value="<%= groupedReviews[bookName].author %>">
+                            <input type="hidden" name="book_url" value="<%= groupedReviews[bookName].book_url %>">
+                            <button type="submit" class="btn-action" title="Add to Collection">+</button>
+                        </form>
+        
+                        <!-- Read Book Button -->
+                        <% if (groupedReviews[bookName].book_url && groupedReviews[bookName].book_url !== 'No URL') { %>
+                            <a href="<%= groupedReviews[bookName].book_url %>" target="_blank" class="btn-action">Read</a>
+                        <% } else { %>
+                            <p>No reading link available</p>
+                        <% } %>
+        
+                        <p class="book-average-rating">Average Rating: <span><%= groupedReviews[bookName].averageRating %></span></p>
+                    </div>
                 </div>
+        
+        
+        
+        
+               
         
                 <!-- Display first three reviews -->
                 <div class="initial-reviews">
