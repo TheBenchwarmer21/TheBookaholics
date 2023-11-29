@@ -794,6 +794,7 @@ app.post('/searchbarresult', async (req, res) => {
     else 
     { 
       // Tell user that book is already in their collection. 
+      console.log(book_title);
       res.redirect("/searchbarresult?error='true'&message=" + book_title + " is already in your collection!");
     }
     
@@ -824,6 +825,7 @@ app.post('/searchbarresult', async (req, res) => {
           ])
 
           .then((data1) => { 
+            console.log(book_title);
             res.redirect("/searchbarresult?message=" + book_title + " has been added to the collection!");
           })
           
@@ -845,6 +847,7 @@ app.post('/searchbarresult', async (req, res) => {
           ])
 
           .then((data1) => { 
+            console.log(book_title);
             res.redirect("/searchbarresult?message=" + book_title + " has been added to the collection!");
           })
         })
