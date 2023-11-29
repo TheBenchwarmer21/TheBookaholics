@@ -1,4 +1,9 @@
 <%- include ('../partials/header') %>
+<div class="col"><%- include ('../partials/message') %></div>
+
+<head>
+    <title> My Books </title>
+  </head>
 
 <style>
     .btn-action {
@@ -100,6 +105,7 @@
                             <% } %>
                             <!-- Remove Button -->
                             <form action="/remove_book" method="post" style="display: inline;">
+                                <input name="book_name" value="<%= book.book_name %>" hidden>
                                 <input type="hidden" name="bookId" value="<%= book.book_id %>">
                                 <button type="submit" class="btn-action btn-remove">Remove</button>
                             </form>
