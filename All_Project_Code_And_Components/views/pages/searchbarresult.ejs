@@ -21,7 +21,7 @@
     <p> </p>
 
     <center>
-        <div class="card" style="width: 70rem; background-color: #CFB997;">
+        <div class="card" style="width: 70rem; background-color: #CFB997; border: 8px solid #5C4033;">
             <!-- Header Information -->
             <% if (results === 0) { %> 
                 <% if (searchOption === "intitle:") { %>
@@ -82,7 +82,7 @@
     <p> </p>
     <center>
         <!-- Get Search Bar -->
-        <div class="card" style="width: 700px; background-color: #BC9E82;">
+        <div class="card" style="width: 700px; background-color: #BC9E82; border: 8px solid #5C4033;">
             <div>
                 <h3> Search Again Below! </h3>
                 <form action="/searchbarresult" method="GET">
@@ -116,21 +116,21 @@
     <!-- <p> below is for spacing purposes -->
     <p> </p>
     <!-- Cards Displayed -->
-    <div class="container">
+    <div class="container h-100">
         <div class="row" > 
         <% books.forEach(ABook => {  %>
-            <div class="card mb-3" style="width: 1200px; max-height: 650px;">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
+            <div class="card mb-6 h-100 border:" >
+                <div class="row no-gutters" style="border: 8px solid #5C4033;">
+                    <div class="col-md-6" style="max-width: 400px;">
                         <!-- Add Book Cover if any -->
                         <% if (ABook.volumeInfo.imageLinks) { %> 
-                            <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="max-height: 650px;">
+                            <img src="<%= ABook.volumeInfo.imageLinks.smallThumbnail %>" class="card-img" style="height: 600px; border: 10px solid #555;">
                         <% } else { %> 
-                            <img src="/img/DefaultBook.png" class="card-img"  style="max-height: 500px;">
+                            <img src="/img/DefaultBook.png" class="card-img" ">
                         <% } %>
                     </div>
                     <!-- Card Details -->
-                    <div class = "col-md-8" style="background-color:#CFB997;">
+                    <div class = "col-md-8" style="background-color:#CFB997; width: 902px;">
                         <div class="card text-center" >
                             <div class="card-header" style="background-color: #BC9E82;">
                                 <!-- Title and Author -->
@@ -144,7 +144,7 @@
                                     <p class="card-text"> No Author Available </p>
                                 <% } %>
                             </div>
-                            <div class="card-body" style="background-color:#CFB997;">
+                            <div class="card-body" style="background-color:#CFB997; height: 600px; max-height: 465px;">
                                 <!-- Print out Stars based on rating, if any -->
                                 <% if (ABook.volumeInfo.averageRating) { %> 
                                     <% if (ABook.volumeInfo.averageRating <= 1.4) { %>
@@ -154,23 +154,27 @@
                                     <% } else if (ABook.volumeInfo.averageRating <= 3.4) { %> 
                                         <h4 class="card-title"> ★★★☆☆ </h4>
                                     <% } else if (ABook.volumeInfo.averageRating <= 4.4) { %> 
-                                        <h4 class="card-title"> ★★★★☆ </h4>
+                                        <h4 class="card-title"> ★★★★☆ </h4>    
                                     <% } else if (ABook.volumeInfo.averageRating <= 5) { %> 
                                         <h4 class="card-title"> ★★★★★ </h4>
                                     <% } %>
+                                    <p class="card-text"> <small class="text-body-secondary"> <%- ABook.volumeInfo.ratingsCount %> bookaholics have recommended this book! </small></p>
                                 <% } else { %>
                                     <h5 class="card-title"> No Star Review Available </h5>
+                                    <p class="card-text"> <small class="text-body-secondary"> But you can be the first bookaholic to add a review! </small></p>
                                 <% } %>
-                                <!--Print out Book Description -->
-                                <% if (ABook.volumeInfo.description) { %>
-                                    <p class="card-text" style="font-family: 'Times New Roman'" > <%- ABook.volumeInfo.description %> </p>
-                                <% } else { %>
-                                    <p class="card-text"> No Description </p>
-                                <% } %>
+                                <div class="card-body" style="background-color:#CFB997; height: 600px; max-height: 350px; overflow-y: auto;" >
+                                    <!--Print out Book Description -->
+                                    <% if (ABook.volumeInfo.description) { %>
+                                        <p class="card-text" style="font-family: 'Times New Roman'" > <%- ABook.volumeInfo.description %>  </p>
+                                    <% } else { %>
+                                        <p class="card-text"> No Description </p>
+                                    <% } %>
+                                </div>
                             </div>
                             <!-- Counter makes sure last page doesn't count out of scope -->
                             <% counter = counter + 1; %>
-                            <div class="card-footer text-muted" style="background-color:#CFB997;">
+                            <div class="card-footer" style="background-color:#BC9E82;">
                                 <!-- Add Book Button -->
                                 <form action="/searchbarresult" method="POST">
                                     <div>
@@ -244,8 +248,11 @@
                     </div>
                 </div>
             </div>
+            <p> . </p>
         <% }); %> 
         <!-- Back and Next button functionality -->
+        <!-- <p> below is for spacing purposes, for the buttons -->
+        <p> </p>
         <center>
             <!-- Back Button -->
             <form action="/searchbarresult" method="GET">
@@ -268,9 +275,9 @@
         </center>
         
         </div>
-        <!-- <p> below is for spacing purposes, for the buttons -->
-        <p> </p>
     </div>
     <% } %>
+<p> . </p>
+<p> . </p>
 </main>
 <%- include ('../partials/footer') %>
