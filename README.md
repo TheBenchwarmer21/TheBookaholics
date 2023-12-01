@@ -20,7 +20,7 @@ This application will offer users the ability to transverse books that they are 
 - bennettgarmon (Ben Garmon)
 
 ## Note for Cybersecurity Team or Individual
-DO NOT DOWNLOAD LATEST VERSION. We have a stable version within a tag (found on right side of screen) titled: REPLACE WITH TITLE HERE. Download zip file and open it. You will still need to follow along the instructions under "Instructions On How To Run The Application Locally" as you need to create an API key but you can skip step 2.
+DO NOT DOWNLOAD LATEST VERSION. We have a stable version within a tag (found on right side of screen) titled: CSCI3403 -- USE THIS VERSION. Download zip file and open it. You will still need to follow along the instructions under "Instructions On How To Run The Application Locally" as you need to create an API key but you can skip step 2.
 
 ## Technology Stack Used
 
