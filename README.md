@@ -1,4 +1,4 @@
-![alt text](/All_Project_Code_And_Components/resources/img/zz.PNG?raw=true)
+![alt text](/All_Project_Code_And_Components/resources/img/zz.png?raw=true)
 # <p align="center"> The Bookaholics </p>
 
 
@@ -21,6 +21,7 @@ This application will offer users the ability to transverse books that they are 
 
 ## Note for Cybersecurity Team or Individual
 DO NOT DOWNLOAD LATEST VERSION. We have a stable version within a tag (found on right side of screen) titled: CSCI3403 -- USE THIS VERSION. Download zip file and open it. You will still need to follow along the instructions under "Instructions On How To Run The Application Locally" as you need to create an API key but you can skip step 2.
+Please do not hesitate to contact one of the team members from the project for any questions or elaborations of the application via email: osgu7204@colorado.edu
 
 ## Technology Stack Used
 
@@ -55,7 +56,7 @@ Used the following tools:
 - You will then be given an API key for which you need to save.
 ![alt text](/All_Project_Code_And_Components/resources/img/Step4.png?raw=true)
 - Here is a youtube video that goes through the process in case you get lost(Starts at "Create credentials" step). Link: https://www.youtube.com/watch?v=LXG_MnQPZiw
-2. Clone project to local maching (via SSH):
+2. Now open a client of your choice, such as Terminal on Mac or WSL on Windows and clone project to local maching (via SSH):
 ``` sh
 git clone git@github.com:TheBenchwarmer21/TheBookaholics.git
 ```
@@ -94,11 +95,12 @@ API_KEY="<ADD KEY HERE>"
 ``` sh
 docker-compose up
 ```
-8. Should have application running, now just enter the following link into whichever browser of your choosing and you should see our web application running
+8. Should have application running when you get the following message in console "Database connection successful" as shown in image below
+![alt text](/All_Project_Code_And_Components/resources/img/readyMessage.png?raw=true)
+9. Now just enter the following link into whichever browser of your choosing and you should see the web application running
 ``` sh
 http://localhost:3000/
 ```
-
 
 ## How To Run The Tests
 
@@ -121,18 +123,7 @@ command: 'npm run testandrun'
 
 After this, run the application as you would normally (to be specified later)
 ## Link To The Deployed Application
-
-
-???
-
-
-
-
-
-
-
-
-
-
-
-
+Enter the following link into whichever browser of your choosing and you should see the web application running
+``` sh
+http://recitation-14-team-05.eastus.cloudapp.azure.com:3000/
+```
