@@ -27,12 +27,13 @@
         .review-card {
             background-color: rgb(229, 221, 221);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
+            height: 275px;
+            border-radius: 35px;
+            margin-bottom: 10px;
         }
 
         .card-body {
-            padding: 15px;
+            padding: 15px;     
         }
 
         .card-title {
@@ -47,10 +48,13 @@
         .card-text {
             color: #333;
             font-size: 1em;
+            overflow-y: auto;
+            height: 135px;
         }
 
         .card-rating {
             font-weight: bold;
+            font-size: 1em;
             color: #4CAF50;
             margin-top: 10px;
         }
@@ -58,7 +62,7 @@
         .card-subtitle {
             color: #666;
             font-size: 1em;
-            margin-top: 15px;
+            margin-bottom: 10px;
             text-align: right;
         }
 
@@ -90,6 +94,7 @@
     background-color: #f0f0f0; 
     border-radius: 10px; 
     padding: 10px;
+    margin-bottom: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
     display: flex;
     justify-content: space-between;
@@ -221,8 +226,9 @@
                                 <div class="card-body">
                                     <h5 class="card-title"><%= review.review_title %></h5>
                                     <p class="card-text"><strong>Review:</strong> <%= review.review %></p>
-                                    <div class="card-rating"><strong>Rating:</strong> <%= review.rating %></div>
+                                    <h6 class="card-rating"><strong>Rating:</strong> <%= review.rating %>
                                     <h6 class="card-subtitle">Reviewed by: <%= review.username %></h6>
+                                    <p style="clear:both"></p>
                                 </div>
                             </div>
                             
