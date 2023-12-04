@@ -10,6 +10,7 @@
         background-image: url('/img/nice.jpg');
         background-size: cover;
         background-position: center;
+        min-height: 800px;
         height: 100vh;
         margin: 0;
     }
@@ -114,6 +115,9 @@
   function getCurrentPageIndex() {
     var pages = document.querySelectorAll('#reviewContainer > .row.row-cols-2.rows-cols-md-2.g-4'); // Gets parent element, which is the reviewcontainer
     var currentPage = document.querySelector(`#reviewContainer > [style*="display: flex;"]`); // Selects the element in the reviewcontainer that has "display: flex;", only the current page will have such styling.
+    if(!currentPage) {
+      currentPage = document.getElementById('pg1');
+    }
     var children = Array.from(pages); // Gets the child elements of the pages array
     return children.indexOf(currentPage) + 1; // Returning index of current page.
   }
@@ -138,7 +142,12 @@
     if(pageNum === 1) // Disables previous button if the shown page is the first page, ensures the next button is not disabled.
     {
       previousButton.classList.add('disabled');
-      nextButton.classList.remove('disabled');
+      if(pageNum === getMaxPages())
+      {
+        nextButton.classList.add('disabled');
+      } else {
+        nextButton.classList.remove('disabled');
+      }
     } else if (pageNum === getMaxPages()) { // Disables next button if the shown page is the last page, ensures the previous button is not disabled.
       previousButton.classList.remove('disabled');
       nextButton.classList.add('disabled');
@@ -160,7 +169,7 @@
       <div class="container container-banner">
         <h1>Your Reviews</h1>
         <p>Explore and manage your book reviews</p>
-    </div>
+      </div>
 
   <!--  <% if (typeof message !== 'undefined' && message) { %>
         <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
@@ -169,7 +178,7 @@
     <% } %>
   -->
   
-    <div class="container" id="reviewContainer" style="height: 774px;">
+    <div class="container" id="reviewContainer" style="height: 468px;">
         <h1 class="text-center" style="padding-top: 20px; padding-bottom: 20px;"> </h1>
   <!--      <% if (typeof message !== 'undefined' && message) { %>
           <div class="alert alert-success" role="alert" style="max-width: 400px; margin: 20px auto; text-align: center;">
@@ -178,23 +187,23 @@
         <% } %>
   -->
         <% if(page == 1) { %>
-          <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: flex">
+          <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: flex" id="pg1">
           <% } else { %>
-            <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: none">
+            <div class="row row-cols-2 rows-cols-md-2 g-4" style="display: none" id="pg1">
             <% } %>
-        <% var cardsPerPage = 6 %>
+        <% var cardsPerPage = 4 %>
         <% var pageIndex = 1 %>
         <% myreviews.forEach((myreview, index) => { %>
             <% var shortenedReview = myreview.review.slice(0,250); %>
               <div class="col">
               <a href="#" data-bs-toggle="modal" data-bs-target="#reviewModal<%= myreview.review_id %>" style="color: inherit; text-decoration: none;">
-                <div class="card bborder" style="height:210px; background-color: gainsboro;">
-                    <div class="card-body rounded-5" style='background-color: gainsboro;'>
+                <div class="card bborder" style="height:210px; background-color: rgb(229, 221, 221);">
+                    <div class="card-body rounded-5" style='background-color: rgb(229, 221, 221);'>
                       
                         <h5 class="card-title" style="background-color: none;"><%= myreview.review_title %></h5>
-                        <h6 class="card-subtitle text-body-secondary" style="padding-bottom: 20px; float: left;">Posted by: <%= myreview.username %></h6>
-                        <h6 class="card-subtitle text-body-secondary text-end" style="float: right;">Rating: <%= myreview.rating %></h6>
-                        <p class="card-text" style="clear: both;"><%= shortenedReview %> </p>
+                        <h6 class="card-subtitle text-body-secondary" style="padding-bottom: 20px; float: left; "><strong>Posted by: </strong><%= myreview.username %></h6>
+                        <h6 class="card-subtitle text-body-secondary text-end" style="float: right;"><strong>Rating: </strong><%= myreview.rating %></h6>
+                        <p class="card-text" style="clear: both;"><strong>Preview: </strong><%= shortenedReview %> </p>
                       
                     </div>
                 </div>
@@ -311,7 +320,7 @@
           <% if(index !== myreviews.length - 1) { %>
             <% pageIndex++ %>
             <% if(pageIndex == page) { %>
-              <div class="row row-cols-2 rows-cols-md-2 g-4" style="display:flex" >
+              <div class="row row-cols-2 rows-cols-md-2 g-4" style="display:flex">
             <% } else { %>
               <div class="row row-cols-2 rows-cols-md-2 g-4" style="display:none" >
             <% } %>
@@ -319,8 +328,33 @@
           <% } %>
           <% } %>
         <% }); %>
+        
       </div>
-      
+      <div class="container" style="padding-top: 50px; ">
+        <nav>
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled" id="previousPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() - 1)">Previous</a></li>
+            <%if(page == 1) { %>
+              <li class="page-item ppage active" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
+              <% } else { %>
+                <li class="page-item ppage" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
+              <% } %>
+            
+            <% var pageNum = Math.ceil(myreviews.length / cardsPerPage); %>
+              <% for(var i = 2; i <= pageNum; i++) { %>
+                <% if(i == page) { %>
+                  <li class="page-item ppage active" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
+                <% } else { %>
+                  <li class="page-item ppage" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
+                <% } %>
+                
+              <% } %>
+                <li class="page-item" id="nextPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() + 1)">Next</a></li>
+
+            
+          </ul>
+        </nav>
+      </div>
       
  <!-- Table Layout for Reviews 
  <table class="table" style="margin-top: 40px;">
@@ -345,68 +379,9 @@
 </table>
 -->
 </div>
-<div class="container" style="padding-top: 50px;">
-  <nav>
-    <ul class="pagination justify-content-center">
-      <li class="page-item disabled" id="previousPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() - 1)">Previous</a></li>
-      <%if(page == 1) { %>
-        <li class="page-item ppage active" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
-        <% } else { %>
-          <li class="page-item ppage" id="page1"><a class="page-link" href="#" onclick="showPage(1)">1</a></li>
-        <% } %>
-      
-      <% var pageNum = Math.ceil(myreviews.length / cardsPerPage); %>
-        <% for(var i = 2; i <= pageNum; i++) { %>
-          <% if(i == page) { %>
-            <li class="page-item ppage active" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
-          <% } else { %>
-            <li class="page-item ppage" id="page<%=i%>"><a class="page-link" href="#" onclick="showPage(<%= i %>)"><%= i %></a></li>
-          <% } %>
-          
-        <% } %>
-      <li class="page-item" id="nextPage"><a class="page-link" href="#" onclick="showPage(getCurrentPageIndex() + 1)">Next</a></li>
-    </ul>
-  </nav>
-</div>
 
-<!-- 
-        <h1 class="text-center" style="color: rgb(13, 13, 13); padding-top: 20px; padding-bottom: 20px;">Your Reviews</h1>
-        
-        <div class="reviews-container">
-            <% myreviews.forEach(myreview => { %>
-                <% var shortenedReview = myreview.review.slice(0,250); %>
-                <div class="review-card">
-                    <div class="card-body">
-                        <h5 class="card-title"><%= myreview.review_title %></h5>
-                        <p class="card-text"><%= shortenedReview %><% if (myreview.review.length > 250) { %>...<% } %></p>
-                        <div class="card-rating">Rating: <%= myreview.rating %>/5</div>
-                        <h6 class="card-subtitle">Posted by: <%= myreview.username %></h6>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
-    </div>
-  -->
-<!-- 
-        <h1 class="text-center" style="color: rgb(13, 13, 13); padding-top: 20px; padding-bottom: 20px;">Your Reviews</h1>
-        
-        <div class="reviews-container">
-            <% myreviews.forEach(myreview => { %>
-                <% var shortenedReview = myreview.review.slice(0,250); %>
-                <div class="review-card">
-                    <div class="card-body">
-                        <h5 class="card-title"><%= myreview.review_title %></h5>
-                        <p class="card-text"><%= shortenedReview %><% if (myreview.review.length > 250) { %>...<% } %></p>
-                        <div class="card-rating">Rating: <%= myreview.rating %>/5</div>
-                        <h6 class="card-subtitle">Posted by: <%= myreview.username %></h6>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
-    </div>
-  -->
-  <!-- <p> found below is for spacing purposes (some room between footer and page transversal) -->
-  <p> . </p>
-  <p> . </p>
+
+
+
 </main>
 <%- include ('../partials/footer') %>
