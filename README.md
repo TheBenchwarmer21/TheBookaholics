@@ -3,7 +3,7 @@
 
 
 ## Brief Application Description
-This application will offer users the ability to transverse books that they are able to read and give a review to, given the collection of a collection of books that Google Books provides to choose from. Able to see other reviews from other users as well!
+This application will offer users the ability to transverse books that they are then able to read and give a review to, given the collection of books that Google Books provides to choose from. Able to see other reviews from other users as well!
 
 
 ## Contributors
@@ -20,9 +20,8 @@ This application will offer users the ability to transverse books that they are 
 - bennettgarmon (Ben Garmon)
 
 ## Note for Cybersecurity Team or Individual
-DO NOT DOWNLOAD LATEST VERSION. We have a stable version within a tag (found on right side of screen) titled: CSCI3403 -- USE THIS VERSION. Download zip file and open it. You will still need to follow along the instructions under "Instructions On How To Run The Application Locally" as you need to create an API key but you can skip step 2.
+DO NOT DOWNLOAD LATEST VERSION. We have a stable version within a tag (found on right side of screen) titled: CSCI3403 -- USE THIS VERSION. Download zip file and open it. You will still need to follow along the instructions under [Instructions On How To Run The Application Locally](#instructions-on-how-to-run-the-application-locally) as you need to create an API key but you can skip step 2.
 Please do not hesitate to contact one of the team members from the project for any questions or elaborations of the application via email: osgu7204@colorado.edu
-
 ## Technology Stack Used
 
 
@@ -121,9 +120,9 @@ command: 'npm run testandrun'
 ```
 
 
-After this, run the application as you would normally (to be specified later)
+After this, run the application as you would normally (have docker running and run "docker-compose up" in your client, look at step 2 from [Instructions On How To Run The Application Locally](#instructions-on-how-to-run-the-application-locally))
 ## Link To The Deployed Application
 Enter the following link into whichever browser of your choosing and you should see the web application running
 ``` sh
-http://recitation-14-team-05.eastus.cloudapp.azure.com:3000/
+http://recitation-14-team-05.eastus.cloudapp.azure.com:3000/login
 ```
