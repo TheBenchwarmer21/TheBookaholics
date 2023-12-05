@@ -145,23 +145,39 @@
                                 <% } %>
                             </div>
                             <div class="card-body" style="background-color:#CFB997; height: 600px; max-height: 465px;">
-                                <!-- Print out Stars based on rating, if any -->
-                                <% if (ABook.volumeInfo.averageRating) { %> 
-                                    <% if (ABook.volumeInfo.averageRating <= 1.4) { %>
-                                        <h4 class="card-title"> ★☆☆☆☆ </h4>
-                                    <% } else if (ABook.volumeInfo.averageRating <= 2.4) { %> 
-                                        <h4 class="card-title"> ★★☆☆☆ </h4>
-                                    <% } else if (ABook.volumeInfo.averageRating <= 3.4) { %> 
-                                        <h4 class="card-title"> ★★★☆☆ </h4>
-                                    <% } else if (ABook.volumeInfo.averageRating <= 4.4) { %> 
-                                        <h4 class="card-title"> ★★★★☆ </h4>    
-                                    <% } else if (ABook.volumeInfo.averageRating <= 5) { %> 
-                                        <h4 class="card-title"> ★★★★★ </h4>
+                                <!-- Print out appropiate beer based on rating, if any -->
+                                <% if (ABook.volumeInfo.averageRating) { %>
+                                    <h5> Overall, <%- ABook.volumeInfo.averageRating %> Out Of 5 Bookaholics Recommend This Book!  </h5> 
+                                    <% let fullBeers = Math.floor(ABook.volumeInfo.averageRating); %>
+                                        <!-- Print out full beers -->
+                                    <% for (let i = 0; i < fullBeers; i++) { %> 
+                                        <img src="/img/FullBeer.png" height="55">
+                                        <!-- <img src="/img/BEER.jpg" height="45" class = "px-3"> -->
+                                    <% } %> 
+
+                                    <!-- Dont print out more than 5 beers -->
+                                    <% if (fullBeers != 5 && (ABook.volumeInfo.averageRating % 1) != 0) { %>
+                                        <% fullBeers++; %>
+                                        <!-- Print out partial beer -->
+                                        <% if ((0.1 <= (ABook.volumeInfo.averageRating % 1)) && ((ABook.volumeInfo.averageRating % 1) < 0.25)) { %> 
+                                            <img src="/img/1_5.png" height="55">
+                                        <% } else if ((0.25 <= (ABook.volumeInfo.averageRating % 1)) && ((ABook.volumeInfo.averageRating % 1) < 0.5)) { %>
+                                            <img src="/img/2_5.png" height="55">
+                                        <% } else if ((0.5 <= ABook.volumeInfo.averageRating % 1) && ((ABook.volumeInfo.averageRating % 1) < 0.75)) { %> 
+                                            <img src="/img/3_5.png" height="55">
+                                        <% } else if ((0.75 <= ABook.volumeInfo.averageRating % 1) && ((ABook.volumeInfo.averageRating % 1) < 1)) { %>
+                                            <img src="/img/4_5.png" height="55">
+                                        <% } %>
                                     <% } %>
-                                    <p class="card-text"> <small class="text-body-secondary"> <%- ABook.volumeInfo.ratingsCount %> bookaholics have recommended this book! </small></p>
+
+                                    <% for (let i = 0; i < (5 - fullBeers); i++) { %>
+                                        <img src="/img/EmptyBeer.png" height="60">
+                                    <% } %>
+                                    <p>  </p>
+                                    <p class="card-text"> <small class="text-body-secondary"> Based Out Of <%- ABook.volumeInfo.ratingsCount %> Bookaholic Recommendation(s) </small></p>
+
                                 <% } else { %>
-                                    <h5 class="card-title"> No Star Review Available </h5>
-                                    <p class="card-text"> <small class="text-body-secondary"> But you can be the first bookaholic to add a review! </small></p>
+                                    <h5 class="card-title"> No Star Rating Available </h5>
                                 <% } %>
                                 <div class="card-body" style="background-color:#CFB997; height: 600px; max-height: 350px; overflow-y: auto;" >
                                     <!--Print out Book Description -->
