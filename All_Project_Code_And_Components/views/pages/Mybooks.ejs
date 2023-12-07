@@ -82,7 +82,7 @@
             <h1>My Book Collection</h1>
         </div>
 
-        <!-- removed search bar -->
+        <!-- removed search bar as it complicated many things, plus seemed useless especially for the purpose of this page-->
 
         <!-- Book Count -->
         <div class="book-count">
@@ -102,6 +102,7 @@
                                 <p class="card-title">Author: <%= book.author %></p>
                                 
                                 <!-- Read Button -->
+                                <!-- The user has an option to read the book if clicked will show the url that displays the book for the user to read-->
                                 <% if (book.book_url) { %>
                                     <button onclick="window.open('<%= book.book_url %>', '_blank')" class="btn-action">
                                         Read
@@ -111,6 +112,7 @@
                                     <span>Not available</span>
                                 <% } %>
 
+                                <!-- The user has an option to remove the book from the book collection here-->
                                 <!-- Remove Button -->
                                 <form action="/remove_book" method="post" style="display: inline;">
                                     <input name="book_name" value="<%= book.book_name %>" hidden>
@@ -119,11 +121,13 @@
                                 </form>
 
                                 <!-- Add Review Button -->
+                                <!-- The user has an option to add a review which will be seen in myreviews-->
                                 <button type="button" class="btn-action" data-toggle="modal" data-target="#addReviewModal-<%= book.book_id %>">
                                     Add Review
                                 </button>
 
                                 <!-- Modal for Adding Review -->
+                                <!-- When adding a review, the user has an option to specify the reviews for the book and add some rating of how good or bad the book is (1-10 rating)-->
                                 <div class="modal fade" id="addReviewModal-<%= book.book_id %>" tabindex="-1" role="dialog" aria-labelledby="modalLabel-<%= book.book_id %>" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -166,7 +170,7 @@
                         </div>
                     </div>
                 <% }); %>
-            <% } else { %>
+            <% } else { %>                                  <!-- If no books are added to the colelction-->
                 <p>No books in the collection.</p>
             <% } %>
         </div>
