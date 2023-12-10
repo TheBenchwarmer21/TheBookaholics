@@ -147,7 +147,7 @@
                             <div class="card-body" style="background-color:#CFB997; height: 600px; max-height: 465px;">
                                 <!-- Print out appropiate beer based on rating, if any -->
                                 <% if (ABook.volumeInfo.averageRating) { %>
-                                    <h5> Overall, <%- ABook.volumeInfo.averageRating %> Out Of 5 Bookaholics Recommend This Book!  </h5> 
+                                    <h5> Overall, <%- ABook.volumeInfo.averageRating %> Out Of 5 Google Books Users Recommend This Book!  </h5> 
                                     <% let fullBeers = Math.floor(ABook.volumeInfo.averageRating); %>
                                         <!-- Print out full beers -->
                                     <% for (let i = 0; i < fullBeers; i++) { %> 
@@ -174,7 +174,7 @@
                                         <img src="/img/EmptyBeer.png" height="60">
                                     <% } %>
                                     <p>  </p>
-                                    <p class="card-text"> <small class="text-body-secondary"> Based Out Of <%- ABook.volumeInfo.ratingsCount %> Bookaholic Recommendation(s) </small></p>
+                                    <p class="card-text"> <small class="text-body-secondary"> Based Out Of <%- ABook.volumeInfo.ratingsCount %> Google Books Recommendation(s) </small></p>
 
                                 <% } else { %>
                                     <h5 class="card-title"> No Star Rating Available </h5>
