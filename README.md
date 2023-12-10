@@ -126,3 +126,8 @@ Enter the following link into whichever browser of your choosing and you should 
 ``` sh
 http://recitation-14-team-05.eastus.cloudapp.azure.com:3000/login
 ```
+## Link to Project Demo Video
+Demo video file size is too large to upload to repository, please click the link below to view project demo. 
+``` sh
+https://youtu.be/KBJ-46r49t8	
+```
