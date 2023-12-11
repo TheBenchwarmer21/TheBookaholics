@@ -1,141 +1,88 @@
-// // Imports the index.js file to be tested.
+// Imports the index.js file to be tested.
+const server = require('../index'); //TO-DO Make sure the path to your index.js is correctly added
+// Importing libraries
 
-// const server = require('../index'); //TO-DO Make sure the path to your index.js is correctly added
-// // Importing libraries
+// Chai HTTP provides an interface for live integration testing of the API's.
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+chai.should();
+chai.use(chaiHttp);
+const {assert, expect} = chai;
 
-// // Chai HTTP provides an interface for live integration testing of the API's.
+describe('Server!', () => {
 
+  // ===========================================================================
+  // TO-DO: Part A Login unit test case
+  // login test
 
-// const chai = require('chai');
-// const chaiHttp = require('chai-http');
-// chai.should();
-// chai.use(chaiHttp);
-// const agent = chai.request.agent(server);
-// const {assert, expect} = chai;
+  // Test case : Register a New User
+  // Tests the register route (/register)
+  // Positive
+  it('Positive Test Case: Registers a new user successfully', done => {
+    chai.request(server)
+      .post('/register')
+      .set('Test-Header', 'unit-test') // This makes sure the register route will return a JSON if its being called by a test, otherwise, it will render the register page. 
+      .send({ username: 'booklover', password: 'love' }) // This user will be deleted in the final test case, this is to ensure the test can be run every time the container is run and we won't end up with dozens of test users. 
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equal('Registration successful'); // This is why the register route needs to return a json, the test can't see this message if a json is not returned. 
+        done();
+      });
 
-// describe('Server!', () => {
+  });
 
-//   // ===========================================================================
-//   // TO-DO: Part A Login unit test case
-//   // login test
+  // Test case: Login existing user
+  // Tests the login route (/login)
+  // Positive
+it('Positive Test Case: Valid User Login', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({ username: 'booklover', password: 'love' }) // This user was just created in the register a new user test. 
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
 
-//   // Test case : Register a New User
-//   // Tests the register route (/register)
-//   // Positive
-//   it('Positive Test Case: Registers a new user successfully', done => {
-//     chai.request(server)
-//       .post('/register')
-//       .set('Test-Header', 'unit-test') // This makes sure the register route will return a JSON if its being called by a test, otherwise, it will render the register page. 
-//       .send({ username: 'c', password: 'c' }) // This user will be deleted in the final test case, this is to ensure the test can be run every time the container is run and we won't end up with dozens of test users. 
-//       .end((err, res) => {
-//         expect(res).to.have.status(200);
-//         expect(res.body.message).to.equal('Registration successful'); // This is why the register route needs to return a json, the test can't see this message if a json is not returned. 
-//         done();
-//       });
-
-//   });
-
-//   // Test case: Login existing user
-//   // Tests the login route (/login)
-//   // Positive
-//   it('Positive Test Case: Valid User Login', done => {
-//     chai
-//       .request(server)
-//       .post('/login')
-//       .send({ username: 'booklover', password: 'love' }) // This user was just created in the register a new user test. 
-//       .end((err, res) => {
-//         expect(res).to.have.status(200);
-//         done();
-//       });
-//   });
-
-//   // Test case: Login invalid user
-//   // Tests the login route (/login)
-//   // Negative
-//   it('Negative Test Case: Invalid User Login', done => {
-//     chai
-//       .request(server)
-//       .post('/login')
-//       .send({ username: 'invalidUser', password: 'wrongPassword' })
-//       .end((err, res) => {
-//         expect(res).to.have.status(401);
-//         done();
-//       });
-//   });
+  // Test case: Login invalid user
+  // Tests the login route (/login)
+  // Negative
+  it('Negative Test Case: Invalid User Login', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({ username: 'invalidUser', password: 'wrongPassword' })
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
 
   
 
-//   // Test case: Attempt to register a user that already exists
-//   // Primarily tests register (/register) route, but also tests delete user (/delete_user) route. 
-//   // Negative
-//   it('Negative Test Case: Fails to register a user with an existing username', done => {
-//     chai.request(server)
-//       .post('/register')
-//       .set('Test-Header', 'unit-test')
-//       .send({ username: 'booklover', password: 'love' })
-//       .end((err, res) => {
-//         expect(res).to.have.status(400); 
-//         expect(res.body.message).to.equal('Username already exists, please try again.');
-//       });
+  // Test case: Attempt to register a user that already exists
+  // Primarily tests register (/register) route, but also tests delete user (/delete_user) route. 
+  // Negative
+  it('Negative Test Case: Fails to register a user with an existing username', done => {
+    chai.request(server)
+      .post('/register')
+      .set('Test-Header', 'unit-test')
+      .send({ username: 'booklover', password: 'love' })
+      .end((err, res) => {
+        expect(res).to.have.status(400); 
+        expect(res.body.message).to.equal('Username already exists, please try again.');
+      });
 
-//       chai.request(server)
-//       .post('/delete_user')
-//       .send({username: 'booklover', password: 'love'}) // Deletes the user that was created for positive test cases. 
-//       .end((err, res) => {
-//         expect(res).to.have.status(200);
-//         expect(res).to.be.json;
-//         expect(res.body.message).to.equal('User has been deleted')
-//         done();
-//       });
-//   });
+      chai.request(server)
+      .post('/delete_user')
+      .send({username: 'booklover', password: 'love'}) // Deletes the user that was created for positive test cases. 
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.message).to.equal('User has been deleted')
+        done();
+      });
+  });
 
-//   describe('Book Review Tests', () => {
-//     let token;
-  
-//     // Perform login before running the tests
-//     before(done => {
-//       agent
-//         .post('/login')
-//         .send({ username: 'b', password: 'b' })
-//         .end((err, res) => {
-//           expect(res).to.have.status(200);
-//           // The session is now established and stored in the agent
-//           done();
-//         });
-//     });
-
-//  // Test case: Post a Book Review
-//   //Positive scenario: Successfully posts a book review.
-//   it('Positive Test Case: Posts a book review successfully', done => {
-//     chai.request(server)
-//       .post('/add_reviews')
-//       .send({ 
-//         title: 'Example Book Title', // Assuming 'title' maps to 'review_title'
-//         author: 'booklover',         // Assuming 'author' maps to 'username'
-//         review: 'This is a great book', 
-//         rating: 5                    // Added rating field
-//       })
-//       .end((err, res) => {
-//         expect(res).to.have.status(200);
-//         expect(res.body.message).to.equal('Review added successfully');
-//         done();
-//       });
-//   });
-  
-//   it('Negative Test Case: Fails to post a book review with missing review', done => {
-//   chai.request(server)
-//     .post('/add_reviews')
-//     .send({ 
-//       title: 'Example Book Title',// 'username' maps to 'title'
-//       author: '', // Empty author field
-//       review: '' 
-//     })
-//     .end((err, res) => {
-//       expect(res).to.have.status(400); 
-//       expect(res.body.message).to.equal('Error adding review:'); 
-//       done();
-//     });
-// });
-
-// });
-// });
+});
